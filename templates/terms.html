@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms & Conditions - AkawoX</title>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black font-sans min-h-screen flex flex-col items-center px-4 py-8 text-purple-100">
+
+  <!-- Logo -->
+  <div class="flex flex-col items-center mb-6">
+    <img src="{% static 'images/logo13.png' %}" alt="Akawo Logo" class="h-24 md:h-28 mx-auto mb-3" />
+    <h1 class="text-3xl font-bold text-white">Terms & Conditions</h1>
+    <p class="text-purple-300 text-sm">Last updated: August 2025</p>
+  </div>
+
+  <!-- Terms Container -->
+  <div class="w-full max-w-4xl bg-zinc-900 p-6 rounded-2xl shadow-lg space-y-6 text-sm leading-relaxed">
+
+    <p>Welcome to AkawoX. By accessing or using our platform, you agree to comply with and be bound by these Terms and Conditions. Please read them carefully before using our services.</p>
+
+    <h2 class="text-lg font-semibold text-white">1. Introduction</h2>
+    <p>AkawoX is a platform that allows individuals and groups to contribute money collectively, track contributions, and manage group savings. By signing up, you accept these terms as a legally binding agreement between you and AkawoX.</p>
+
+    <h2 class="text-lg font-semibold text-white">2. Eligibility</h2>
+    <p>You must be at least 18 years old to use AkawoX. By creating an account, you confirm that you meet this requirement and that all information you provide is accurate.</p>
+
+    <h2 class="text-lg font-semibold text-white">3. User Responsibilities</h2>
+    <ul class="list-disc pl-6 space-y-1">
+      <li>Provide truthful and up-to-date personal information.</li>
+      <li>Keep your account login details secure.</li>
+      <li>Use AkawoX only for lawful purposes and not for fraudulent activities.</li>
+    </ul>
+
+    <h2 class="text-lg font-semibold text-white">4. Contributions & Payments</h2>
+    <p>All contributions made through AkawoX are recorded for transparency. Once a contribution is made, it is non-refundable unless otherwise agreed by your group’s organizer.</p>
+
+    <h2 class="text-lg font-semibold text-white">5. Privacy</h2>
+    <p>We value your privacy. All personal data is handled according to our <a href="#" class="text-purple-400 underline">Privacy Policy</a>.</p>
+
+    <h2 class="text-lg font-semibold text-white">6. Limitation of Liability</h2>
+    <p>AkawoX acts as a facilitator for group savings and is not responsible for disputes, losses, or fraudulent activities carried out by group members or organizers.</p>
+
+    <h2 class="text-lg font-semibold text-white">7. Account Suspension or Termination</h2>
+    <p>We reserve the right to suspend or terminate accounts that violate these terms or engage in suspicious activities.</p>
+
+    <h2 class="text-lg font-semibold text-white">8. Amendments</h2>
+    <p>We may update these Terms & Conditions at any time. Continued use of AkawoX after updates means you accept the revised terms.</p>
+
+    <h2 class="text-lg font-semibold text-white">9. Contact Us</h2>
+    <p>If you have questions about these terms, please contact us at <a href="mailto:support@akawox.com" class="text-purple-400 underline">support@akawox.com</a>.</p>
+  </div>
+
+  <!-- Back Button -->
+  <div class="mt-6">
+    <a href="{% url 'signup' %}" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 rounded-xl text-white transition duration-300">Back</a>
+  </div>
+
+</body>
+</html>

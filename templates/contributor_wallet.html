@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Groups</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Material Symbols -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+  <!-- Optional: Custom Tailwind Config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            purple: {
+              800: '#6B21A8',
+              600: '#9333EA',
+            },
+            zinc: {
+              900: '#18181B',
+              800: '#27272A',
+            },
+          },
+        },
+      },
+    };
+  </script>
+</head>
+
+<body class="bg-black text-white min-h-screen p-4">
+ 
+  <!-- Back Button -->
+  <div class="mb-4">
+    <a href="javascript:history.back()" class="inline-flex items-center text-white hover:text-purple-500">
+      <span class="material-symbols-outlined mr-1">arrow_back</span>
+      
+    </a>
+  </div>
+    <h2 class="text-center text-xl font-bold flex-grow -ml-6">Your Groups</h2>
+  </div>
+
+  <!-- Group Cards or Empty Message -->
+  {% if groups.exists %}
+    <div class="grid gap-4">
+      {% for group in groups %}
+        <a href="{% url 'wallet_page' group.id %}" class="block bg-zinc-900 rounded-xl p-4 shadow hover:bg-zinc-800 transition duration-200">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-purple-800 text-white rounded-full flex items-center justify-center font-bold">
+                {{ group.group_name|first }}
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold">{{ group.group_name }}</h3>
+                <p class="text-sm text-gray-400">₦{{ group.contribution_amount }} per {{ group.contribution_cycle }}</p>
+              </div>
+            </div>
+            <span class="material-symbols-outlined text-purple-400">
+              open_in_new
+            </span>
+          </div>
+
+          <div class="flex justify-between text-sm text-gray-400">
+            <span>{{ group.members.count }} Member{{ group.members.count|pluralize }}</span>
+            <span>{{ group.created_at|date:"M j, Y" }}</span>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-center text-gray-500 italic mt-10">You haven't joined any group yet.</p>
+  {% endif %}
+
+ 
+</body>
+</html>

@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up - Mobile</title>
+
+  <!-- Google Sign-in & Fonts -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    function handleCredentialResponse(response) {
+      console.log("Encoded JWT ID token: " + response.credential);
+      alert("Google Sign-up successful!");
+    }
+  </script>
+</head>
+<body class="bg-black font-sans min-h-screen flex items-center justify-center px-4">
+
+  <div class="w-full max-w-md  p-6 rounded-3xl shadow-lg">
+    
+    <!-- Logo -->
+    <div class="flex flex-col items-center text-center mb-6">
+      <img src="{% static 'images/logo13.png' %}" alt="Akawo Logo" class="h-28 md:h-32 mx-auto mb-3" />
+      <h1 class="text-white text-2xl font-bold">Join AkawoX</h1>
+      <p class="text-purple-200 text-sm">Create your account and start contributing</p>
+    </div>
+
+    <!-- Form -->
+    <form method="POST" action="{% url 'signup' %}" class="space-y-4">
+      {% csrf_token %}
+
+      <!-- First & Last Name -->
+      <div class="flex space-x-4">
+        <div class="relative w-1/2">
+          <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 pointer-events-none">person</span>
+          <input type="text" name="signup-firstname" placeholder="First Name" required
+            class="w-full pl-12 py-3 rounded-xl bg-purple-600 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500">
+        </div>
+        <div class="relative w-1/2">
+          <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 pointer-events-none">person</span>
+          <input type="text" name="signup-lastname" placeholder="Last Name" required
+            class="w-full pl-12 py-3 rounded-xl bg-purple-600 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500">
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="relative">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-purple-400">mail</span>
+        <input type="email" name="signup-email" placeholder="Email address" required
+          class="w-full pl-10 py-3 rounded-xl bg-purple-700 text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+      </div>
+
+      <!-- Username -->
+      <div class="relative">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-purple-400">account_box</span>
+        <input type="text" name="signup-username" placeholder="User name" required
+          class="w-full pl-10 py-3 rounded-xl bg-purple-700 text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+      </div>
+
+      <!-- Password -->
+      <div class="relative">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-purple-400">lock</span>
+        <input type="password" name="signup-password1" placeholder="Create password" required
+          class="w-full pl-10 py-3 rounded-xl bg-purple-700 text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="relative">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-purple-400">lock_reset</span>
+        <input type="password" name="signup-password2" placeholder="Confirm password" required
+          class="w-full pl-10 py-3 rounded-xl bg-purple-700 text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+      </div>
+
+      <!-- CAPTCHA -->
+      <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY_HERE"></div>
+
+      <!-- Terms & Conditions -->
+      <div class="flex items-center space-x-2">
+        <input type="checkbox" required class="accent-purple-500 w-5 h-5" />
+        <label class="text-sm text-purple-200">I agree to the <a href="{% url 'terms' %}" class="underline">Terms & Conditions</a> and <a href="{% url 'policy' %}" class="underline">Privacy Policy</a></label>
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl transition duration-300">Create Account</button>
+
+      <!-- Django Messages -->
+      {% if messages %}
+      <div>
+        {% for message in messages %}
+        <div class="p-2 rounded text-sm text-white {% if message.tags == 'error' %}bg-red-600{% elif message.tags == 'success' %}bg-green-600{% endif %}">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Sign in link -->
+      <div class="text-center text-sm text-purple-300">Already have an account? <a href="{% url 'login' %}" class="text-white font-medium">Sign In</a></div>
+
+      <!-- Divider -->
+      <div class="flex items-center my-4">
+        <div class="flex-grow h-px bg-white/30"></div>
+        <span class="px-4 text-white text-sm font-bold">or</span>
+        <div class="flex-grow h-px bg-white/30"></div>
+      </div>
+
+      <!-- Google Sign-Up Button -->
+      <div class="g_id_signin"
+        data-type="standard"
+        data-shape="pill"
+        data-theme="outline"
+        data-text="signup_with"
+        data-size="large"
+        data-logo_alignment="left">
+      </div>
+    </form>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Group Overview</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            dark: "#0f0f0f",
+            surface: "#1c1c1c",
+            card: "#2a2a2a",
+            textLight: "#e5e5e5",
+            accent: "#a855f7"
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-dark text-white min-h-screen p-4">
+
+  <!-- Topbar -->
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold flex items-center gap-2">
+      <a href="{% url 'organizer_dashboard' %}" class="text-accent hover:underline">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </a>
+      {{ group.group_name }}
+    </h1>
+    <p class="text-sm text-gray-400 mt-1">{% now "l, j F Y" %}</p>
+  </div>
+
+  <!-- Group Financial Info -->
+  <div class="bg-card p-4 rounded-xl mb-6 space-y-2 shadow">
+    {% for group in groups %}
+      <h3 class="text-sm text-textLight font-semibold">₦{{ group.contribution_amount }} per {{ group.contribution_cycle }}</h3>
+      <h3 class="text-sm text-textLight font-semibold">Withdrawals: {{ group.withdrawal_schedule }}</h3>
+    {% endfor %}
+  </div>
+
+  <!-- Stats -->
+  <div class="grid grid-cols-2 gap-4 mb-8">
+    <div class="bg-yellow-500 text-white p-4 rounded-xl text-center">
+      <h3 class="text-lg font-bold">{{ group.members.count }}</h3>
+      <p class="text-sm">Total Members</p>
+    </div>
+    <div class="bg-purple-600 text-white p-4 rounded-xl text-center">
+      <h3 class="text-lg font-bold">₦{{ group.total_contributions }}</h3>
+      <p class="text-sm">Total Contributions</p>
+    </div>
+    <div class="bg-pink-500 text-white p-4 rounded-xl text-center">
+      <h3 class="text-lg font-bold">₦{{ group.total_custom_payouts }}</h3>
+      <p class="text-sm">Custom Payments</p>
+    </div>
+    <div class="bg-surface text-white p-4 rounded-xl text-center">
+      <div class="flex items-center justify-center space-x-2">
+        <h3 id="referral-code" class="text-lg font-bold">{{ group.referral_code }}</h3>
+        <button onclick="copyReferralCode()" class="hover:text-yellow-400" title="Copy Code">
+          <span class="material-symbols-outlined">content_copy</span>
+        </button>
+      </div>
+      <p class="text-sm">Referral Code</p>
+    </div>
+  </div>
+
+ <!-- Members Section -->
+<div class="bg-surface p-4 rounded-xl shadow max-h-[500px] overflow-y-auto">
+  <h2 class="text-xl font-bold mb-4">Group Members</h2>
+
+  {% if group.members.exists %}
+    <div class="space-y-4">
+      {% for member in group.members.all %}
+        <div class="bg-card rounded-lg p-4 shadow hover:bg-zinc-800 transition space-y-3">
+
+          <!-- Profile Image -->
+          <div class="flex justify-center">
+            {% if member.profile.image %}
+              <img src="{{ member.profile.image.url }}" alt="Profile" class="w-16 h-16 rounded-full object-cover"/>
+            {% else %}
+              <div class="w-16 h-16 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold text-xl">
+                {{ member.username|slice:"0:1" }}
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Member Info -->
+          <div class="text-center space-y-1">
+            <p class="font-semibold text-lg">{{ member.username }}</p>
+            <p class="text-sm text-gray-400">{{ member.get_full_name }}</p>
+            <p class="text-sm text-gray-500">{{ member.phone }}</p>
+            <p class="text-sm text-gray-500">{{ member.email }}</p>
+          </div>
+
+          <!-- Remove Button -->
+          <form method="post" action="{% url 'remove_member' group.id member.id %}" class="text-center pt-2">
+            {% csrf_token %}
+            <button class="text-red-400 hover:text-red-600 text-sm font-medium">Remove</button>
+          </form>
+
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-center text-gray-400 italic">No contributor has joined the group yet.</p>
+  {% endif %}
+</div>
+
+<script>
+  function copyReferralCode() {
+    const codeElement = document.getElementById('referral-code');
+    const codeText = codeElement.innerText;
+
+    navigator.clipboard.writeText(codeText).then(() => {
+      alert("Referral code copied!");
+    }).catch(err => {
+      console.error("Copy failed:", err);
+      alert("Failed to copy code.");
+    });
+  }
+</script>
+
+
+</body>
+</html>

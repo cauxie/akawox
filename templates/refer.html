@@ -1,0 +1,105 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refer &amp; Earn</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Material Icons (Old set) -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- Google Material Symbols Outlined (New set for footer navbar) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+
+    <style>[x-cloak]{display:none!important}</style>
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+
+<body class="bg-black text-white min-h-screen flex flex-col justify-between">
+
+    <!-- Top Section -->
+    <div class="p-5">
+        <!-- Title -->
+        <h1 class="text-center text-lg font-semibold">Refer &amp; Earn</h1>
+
+        <!-- Card -->
+        <div class="mt-6 bg-[#111] rounded-xl p-5">
+            <!-- Rewards -->
+            <p class="text-sm mb-3">
+                My rewards: <span class="text-blue-500 font-bold">⍟0</span>
+            </p>
+
+            <!-- Icons -->
+            <div class="flex  mb-4 justify-center">
+                <!-- People Icon -->
+                <div class="bg-yellow-500 rounded-full p-4 flex items-center justify-center ml-1">
+                    <span class="material-icons text-white text-4xl">group</span>
+                </div>
+
+                <!-- Wallet Icon -->
+                <div class="bg-teal-700 rounded-full p-4 flex items-center justify-center">
+                    <span class="material-icons text-white text-4xl">account_balance_wallet</span>
+                </div>
+            </div>
+
+            <!-- Text -->
+            <p class="text-sm mb-4">Invite friends to AkawoX to earn rewards</p>
+
+            <hr class="border-gray-600 mb-4">
+
+            <!-- Button -->
+            <button class="bg-blue-600 hover:bg-blue-700 w-full py-3 rounded-full text-white font-semibold">
+                Refer a friend
+            </button>
+        </div>
+    </div>
+
+  
+
+   <!-- Footer Navbar -->
+<div x-data="{ active: 'send' }"
+     class="fixed bottom-0 left-0 right-0 flex justify-around items-end py-3 bg-black z-50">
+
+  <!-- Home -->
+  <a href="{% url 'organizer_dashboard' %}" @click="active = 'home'" class="flex flex-col items-center cursor-pointer">
+    <div
+      :class="active === 'home' ? 'bg-blue-600 text-white -translate-y-6 shadow-lg' : 'text-gray-400'"
+      class="p-3 rounded-full transition-all duration-200 flex items-center justify-center w-12 h-12">
+      <span class="material-symbols-outlined text-2xl">home</span>
+    </div>
+    <!-- hidden by default; will show only if active === 'home' -->
+    <span x-cloak x-show="active === 'home'" class="text-xs mt-1 text-white">Home</span>
+  </a>
+
+  <!-- Send (active by default) -->
+  <a href="{% url 'refer' %}" @click="active = 'send'" class="flex flex-col items-center cursor-pointer">
+    <div
+      :class="active === 'send' ? 'bg-blue-600 text-white -translate-y-8 shadow-2xl' : 'text-gray-400'"
+      class="p-3 rounded-full transition-all duration-200 flex items-center justify-center w-14 h-14">
+      <span class="material-symbols-outlined text-3xl">bolt</span>
+    </div>
+    <!-- only the active tab shows its label -->
+    <span x-cloak x-show="active === 'send'" class="text-xs mt-1 text-white">Send</span>
+  </a>
+
+  <!-- Help -->
+  <a href="{% url 'support' %}" @click="active = 'help'" class="flex flex-col items-center cursor-pointer">
+    <div
+      :class="active === 'help' ? 'bg-blue-600 text-white -translate-y-6 shadow-lg' : 'text-gray-400'"
+      class="p-3 rounded-full transition-all duration-200 flex items-center justify-center w-12 h-12">
+      <span class="material-symbols-outlined text-2xl">help</span>
+    </div>
+    <span x-cloak x-show="active === 'help'" class="text-xs mt-1 text-white">Help</span>
+  </a>
+
+  <!-- Profile -->
+  <a href="{% url 'me' %}" @click="active = 'profile'" class="flex flex-col items-center cursor-pointer">
+    <div
+      :class="active === 'profile' ? 'bg-blue-600 text-white -translate-y-6 shadow-lg' : 'text-gray-400'"
+      class="p-3 rounded-full transition-all duration-200 flex items-center justify-center w-12 h-12">
+      <span class="material-symbols-outlined text-2xl">account_circle</span>
+    </div>
+    <span x-cloak x-show="active === 'profile'" class="text-xs mt-1 text-white">Profile</span>
+  </a>
+</div>
+</body>
+</html>

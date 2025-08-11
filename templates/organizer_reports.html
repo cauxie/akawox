@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Akawo Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+  <script>
+    function toggleModal() {
+      const modal = document.getElementById('supportModal');
+      modal.classList.toggle('hidden');
+      modal.classList.toggle('flex');
+    }
+  </script>
+</head>
+<body class="bg-black text-white min-h-screen font-sans">
+
+  <main class="p-4 md:p-8 relative">
+
+    <!-- Back Button -->
+    <div class="flex items-center mb-6">
+      <a href="javascript:history.back()" class="text-white hover:text-purple-400 text-2xl mr-4">←</a>
+      <h1 class="text-xl font-bold">Groups Report ({{ groups.count }})</h1>
+    </div>
+
+
+    <!-- Group Cards -->
+    <div class="space-y-4">
+      {% if groups.exists %}
+        {% for group in groups %}
+        <a href="{% url 'reports_page' group.id %}" class="block bg-zinc-900 rounded-xl p-4 hover:bg-zinc-800 transition duration-200 shadow">
+          <div class="flex justify-between items-center mb-2">
+            <h2 class="text-lg font-bold">{{ group.group_name }}</h2>
+            <span class="material-symbols-outlined text-purple-400">open_in_new</span>
+          </div>
+          <p class="text-sm text-gray-400 mb-1">
+            Members: <span class="text-white font-semibold">{{ group.members.count }} Member{{ group.members.count|pluralize }}</span>
+          </p>
+          <p class="text-sm text-gray-400">
+            {% with group.reports.count as report_count %}
+              Reports: <span class="text-purple-400 font-semibold">{{ report_count }} new report{{ report_count|pluralize }}</span>
+            {% endwith %}
+          </p>
+        </a>
+        {% endfor %}
+      {% else %}
+        <p class="text-center text-gray-500 italic mt-10">No group has been created here.</p>
+      {% endif %}
+    </div>
+
+    <!-- Floating Support Button -->
+    <button onclick="toggleModal()" class="fixed bottom-8 right-8 bg-purple-800 text-white rounded-full px-6 py-3 text-lg shadow-lg hover:bg-purple-900 transition font-bold z-50">
+      Contact Support
+    </button>
+
+    <!-- Support Modal -->
+<div id="supportModal" class="hidden fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50">
+  <div class="bg-zinc-900 p-6 rounded-lg w-full max-w-md text-white">
+    <h3 class="text-xl font-bold mb-4 text-center text-purple-800">Contact Admin / Support</h3>
+    <form method="POST">
+      {% csrf_token %}
+      <div class="mb-4">
+        <label class="block mb-1 font-semibold">Subject</label>
+        <input type="text" name="subject" 
+          class="w-full border border-gray-600 bg-zinc-800 text-white rounded px-3 py-2 placeholder-gray-400" 
+          placeholder="Brief subject..." required>
+      </div>
+      <div class="mb-4">
+        <label class="block mb-1 font-semibold">Message</label>
+        <textarea name="message" rows="5" 
+          class="w-full border border-gray-600 bg-zinc-800 text-white rounded px-3 py-2 placeholder-gray-400" 
+          placeholder="Describe the issue or question..." required></textarea>
+      </div>
+      <div class="flex justify-end space-x-2">
+        <button type="button" onclick="toggleModal()" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Cancel</button>
+        <button type="submit" class="bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-800">Send</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+  </main>
+
+</body>
+</html>

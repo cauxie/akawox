@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help &amp; Support</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- Google Material Symbols Outlined (New set for footer navbar) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+
+     <style>[x-cloak]{display:none!important}</style>
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-black text-white min-h-screen flex flex-col justify-between">
+
+    <!-- Top Section -->
+    <div class="p-5">
+        <!-- Title -->
+        <h1 class="text-center text-lg font-semibold">Help &amp; Support</h1>
+
+        <!-- Card -->
+        <div class="mt-6 bg-[#111] rounded-xl">
+            
+           <!-- Support Links -->
+<a href="https://wa.me/234XXXXXXXXXX" target="_blank" class="block">
+  <div class="flex items-center justify-between p-4 border-b border-gray-800">
+    <div class="flex items-center space-x-4">
+      <div class="bg-gray-800 rounded-full w-10 h-10 flex items-center justify-center">
+        <span class="material-icons text-white">headset</span>
+      </div>
+      <span>WhatsApp</span>
+    </div>
+    <span class="material-icons text-gray-400">chevron_right</span>
+  </div>
+</a>
+
+<a href="https://facebook.com" target="_blank" class="block">
+  <div class="flex items-center justify-between p-4 border-b border-gray-800">
+    <div class="flex items-center space-x-4">
+      <div class="bg-gray-800 rounded-full w-10 h-10 flex items-center justify-center">
+        <span class="material-icons text-white">headset</span>
+      </div>
+      <span>Facebook</span>
+    </div>
+    <span class="material-icons text-gray-400">chevron_right</span>
+  </div>
+</a>
+
+<a href="https://instagram.com" target="_blank" class="block">
+  <div class="flex items-center justify-between p-4 border-b border-gray-800">
+    <div class="flex items-center space-x-4">
+      <div class="bg-gray-800 rounded-full w-10 h-10 flex items-center justify-center">
+        <span class="material-icons text-white">headset</span>
+      </div>
+      <span>Instagram</span>
+    </div>
+    <span class="material-icons text-gray-400">chevron_right</span>
+  </div>
+</a>
+
+<a href="https://twitter.com" target="_blank" class="block">
+  <div class="flex items-center justify-between p-4 border-b border-gray-800">
+    <div class="flex items-center space-x-4">
+      <div class="bg-gray-800 rounded-full w-10 h-10 flex items-center justify-center">
+        <span class="material-icons text-white">headset</span>
+      </div>
+      <span>Twitter</span>
+    </div>
+    <span class="material-icons text-gray-400">chevron_right</span>
+  </div>
+</a>
+
+<a href="tel:+234XXXXXXXXXX" class="block">
+  <div class="flex items-center justify-between p-4 border-b border-gray-800">
+    <div class="flex items-center space-x-4">
+      <div class="bg-gray-800 rounded-full w-10 h-10 flex items-center justify-center">
+        <span class="material-icons text-white">headset</span>
+      </div>
+      <span>Phone</span>
+    </div>
+    <span class="material-icons text-gray-400">chevron_right</span>
+  </div>
+</a>
+
+<a href="/report-issue" class="block">
+  <div class="flex items-center justify-between p-4  border-gray-800">
+    <div class="flex items-center space-x-4">
+      <div class="bg-gray-800 rounded-full w-10 h-10 flex items-center justify-center">
+        <span class="material-icons text-white">error_outline</span>
+      </div>
+      <span>Report an Issue</span>
+    </div>
+    <span class="material-icons text-gray-400">chevron_right</span>
+  </div>
+</a>
+</div>
+
+<!-- Social Section -->
+<div class="mt-6 flex items-center">
+  <div class="flex-grow border-t border-gray-700"></div>
+  <span class="mx-3 text-gray-400 text-sm">Follow us on</span>
+  <div class="flex-grow border-t border-gray-700"></div>
+</div>
+
+<div class="flex justify-center space-x-6 mt-4">
+  <a href="https://t.me/YourChannel" target="_blank">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" class="w-10 h-10" alt="Telegram">
+  </a>
+  <a href="https://instagram.com/YourProfile" target="_blank">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" class="w-10 h-10" alt="Instagram">
+  </a>
+  <a href="https://twitter.com/YourProfile" target="_blank">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/x_logo_2023.svg" class="w-10 h-10 bg-white rounded-full p-1" alt="X">
+  </a>
+</div>
+
+   <!-- Footer Navbar -->
+<div x-data="{ active: 'help' }"
+     class="fixed bottom-0 left-0 right-0 flex justify-around items-end py-3 bg-black z-50">
+
+  <!-- Home -->
+  <a href="{% url 'organizer_dashboard' %}" @click="active = 'home'" class="flex flex-col items-center cursor-pointer">
+    <div
+      :class="active === 'home' ? 'bg-blue-600 text-white -translate-y-6 shadow-lg' : 'text-gray-400'"
+      class="p-3 rounded-full transition-all duration-200 flex items-center justify-center w-12 h-12">
+      <span class="material-symbols-outlined text-2xl">home</span>
+    </div>
+    <span x-cloak x-show="active === 'home'" class="text-xs mt-1 text-white">Home</span>
+  </a>
+
+  <!-- Send -->
+  <a href="{% url 'refer' %}" @click="active = 'send'" class="flex flex-col items-center cursor-pointer">
+    <div
+      :class="active === 'send' ? 'bg-blue-600 text-white -translate-y-8 shadow-2xl' : 'text-gray-400'"
+      class="p-3 rounded-full transition-all duration-200 flex items-center justify-center w-14 h-14">
+      <span class="material-symbols-outlined text-3xl">bolt</span>
+    </div>
+    <span x-cloak x-show="active === 'send'" class="text-xs mt-1 text-white">Send</span>
+  </a>
+
+  <!-- Help (Active now) -->
+  <a href="{% url 'support' %}" @click="active = 'help'" class="flex flex-col items-center cursor-pointer">
+    <div
+      :class="active === 'help' ? 'bg-blue-600 text-white -translate-y-6 shadow-lg' : 'text-gray-400'"
+      class="p-3 rounded-full transition-all duration-200 flex items-center justify-center w-12 h-12">
+      <span class="material-symbols-outlined text-2xl">help</span>
+    </div>
+    <span x-cloak x-show="active === 'help'" class="text-xs mt-1 text-white">Help</span>
+  </a>
+
+  <!-- Profile -->
+  <a href="{% url 'me' %}" @click="active = 'profile'" class="flex flex-col items-center cursor-pointer">
+    <div
+      :class="active === 'profile' ? 'bg-blue-600 text-white -translate-y-6 shadow-lg' : 'text-gray-400'"
+      class="p-3 rounded-full transition-all duration-200 flex items-center justify-center w-12 h-12">
+      <span class="material-symbols-outlined text-2xl">account_circle</span>
+    </div>
+    <span x-cloak x-show="active === 'profile'" class="text-xs mt-1 text-white">Profile</span>
+  </a>
+</div>
+</body>
+</html>

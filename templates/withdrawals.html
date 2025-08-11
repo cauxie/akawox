@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Manage Group | Akawo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="bg-white text-gray-800 font-sans">
+  <div class="min-h-screen flex flex-col md:flex-row">
+
+    <!-- Sidebar -->
+    <aside class="w-full md:w-64 bg-white text-black flex flex-col p-6 space-y-10 shadow">
+      <div class="flex justify-center">
+        <div class="flex items-center gap-1">
+          <img src="{% static 'images/logo.png' %}" alt="Logo" class="w-14 h-14" />
+          <span class="font-bold text-2xl">AkawoX</span>
+        </div>
+      </div>
+
+      <nav class="flex flex-col space-y-4 text-lg font-medium text-left mt-10">
+        <a href="{% url 'organizer_dashboard' %}" class="flex items-center gap-3 hover:text-purple-600 transition py-2 px-3 rounded hover:bg-purple-100">
+          <span class="material-symbols-outlined">dashboard_2</span>
+          My Group
+        </a>
+        <a href="{% url 'group_manage' %}" class="flex items-center gap-3 hover:text-purple-600 transition py-2 px-3 rounded hover:bg-purple-100">
+          <span class="material-symbols-outlined">account_tree</span>
+          Management
+        </a>
+        <a href="{% url 'organizer_contribution' %}" class="flex items-center gap-3 hover:text-purple-600 transition py-2 px-3 rounded hover:bg-purple-100">
+          <span class="material-symbols-outlined">send_money</span>
+          Contributions
+        </a>
+        <a href="{% url 'organizer_withdrawal' %}" class="flex items-center gap-3 hover:text-purple-600 transition py-2 px-3 rounded hover:bg-purple-100">
+          <span class="material-symbols-outlined">local_atm</span>
+          Withdrawals
+        </a>
+        <a href="{% url 'organizer_reports' %}" class="flex items-center gap-3 hover:text-purple-600 transition py-2 px-3 rounded hover:bg-purple-100">
+          <span class="material-symbols-outlined">lab_profile</span>
+          Reports
+        </a>
+         <a href="" class="flex items-center gap-3 hover:text-purple-600 transition py-2 px-3 rounded hover:bg-purple-100">
+          <span class="material-symbols-outlined">wallet</span>
+          wallet
+        <a href="{% url 'account_settings' %}" class="flex items-center gap-3 hover:text-purple-600 transition py-2 px-3 rounded hover:bg-purple-100">
+          <span class="material-symbols-outlined">settings</span>
+          Settings
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col p-6">
+
+      <!-- Topbar -->
+      <div class="flex justify-between items-center mb-6">
+        <div>
+          <h1 class="text-2xl font-bold">
+            <a href="{% url 'organizer_withdrawal' %}" class="text-purple-600 hover:text-purple-800 mr-2">
+              <span class="material-symbols-outlined">arrow_back</span>
+            </a>
+            Withdrawals {{ group.group_name }}
+          </h1>
+          <p class="text-sm text-gray-500">{% now "l, j F Y" %}</p>
+        </div>
+
+        <div class="flex items-center space-x-2 p-2 border border-gray-300 rounded-full shadow-lg bg-white">
+          {% if user.profile.image %}
+          <img src="{{ user.profile.image.url }}" class="w-8 h-8 rounded-full" />
+          {% else %}
+          <div class="w-8 h-8 bg-purple-700 text-white flex items-center justify-center rounded-full uppercase font-bold">
+            {{ user.username|first }}
+          </div>
+          {% endif %}
+          <span class="font-medium text-sm">{{ user.username }}</span>
+          <span class="material-symbols-outlined p-2 border border-gray-300 rounded-full shadow">notifications</span>
+        </div>
+      </div>
+
+      <h1 class="text-2xl font-bold text-center my-6 text-purple-700">
+  <span class="material-symbols-outlined text-5xl text-purple-600 block mb-2">local_atm</span>
+  Withdrawals For {{ group.group_name }}
+</h1>
+
+    
+      
+
+    </div>
+  </div>
+</body>
+</html>
+
+
+

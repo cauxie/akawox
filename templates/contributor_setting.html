@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Account Settings</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body class="bg-black text-white min-h-screen p-4">
+
+  <!-- Back Button -->
+  <div class="mb-4">
+    <a href="javascript:history.back()" class="inline-flex items-center text-white hover:text-purple-500">
+      <span class="material-symbols-outlined mr-1">arrow_back</span>
+      
+    </a>
+  </div>
+
+  <!-- Topbar -->
+  <div class="text-center mb-8">
+    <h1 class="text-2xl font-bold">Account Settings</h1>
+    <p class="text-sm text-gray-400">{% now "l, j F Y" %}</p>
+  </div>
+
+  <div class="flex flex-col md:flex-row gap-6">
+    <!-- Settings Panel -->
+    <aside class="w-full md:w-64 bg-zinc-800 rounded-xl p-6 shadow-md">
+      <h2 class="text-lg font-bold mb-6 text-purple-400">Settings</h2>
+      <ul class="space-y-4 text-sm">
+        <li><a href="#" class="text-purple-400 font-semibold">Account</a></li>
+        <li><a href="#" class="text-gray-300 hover:text-purple-300">Notifications</a></li>
+        <li><a href="#" class="text-gray-300 hover:text-purple-300">Password</a></li>
+      </ul>
+    </aside>
+
+    <!-- Account Settings Form -->
+    <main class="flex-1 bg-zinc-900 rounded-xl p-6 shadow-md">
+      <h2 class="text-xl font-bold mb-6 text-purple-400">Account</h2>
+
+      <form method="POST" enctype="multipart/form-data" class="space-y-6 text-sm">
+        {% csrf_token %}
+
+        <!-- Avatar -->
+        <div class="flex items-center gap-4">
+          {% if user.profile.image %}
+            <img src="{{ user.profile.image.url }}" class="h-10 w-10 rounded-full object-cover" alt="Profile" />
+          {% else %}
+            <div class="h-10 w-10 rounded-full bg-gray-600 text-white text-center flex items-center justify-center font-semibold">
+              {{ user.username|slice:":1"|upper }}
+            </div>
+          {% endif %}
+          <div class="space-y-2">
+            <input type="file" name="profile_picture" class="block text-xs text-white" />
+            <div class="flex gap-2">
+              <button type="submit" name="action" value="upload_avatar" class="px-3 py-1 border border-purple-500 text-purple-400 rounded text-xs hover:bg-purple-500 hover:text-black">Upload</button>
+              <button type="submit" name="action" value="remove_avatar" class="px-3 py-1 border border-gray-500 text-gray-300 rounded text-xs hover:bg-gray-700">Remove</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Username and First Name -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block mb-1">Username</label>
+            <input type="text" class="w-full bg-zinc-800 border border-gray-700 rounded px-3 py-2 text-white" value="{{ user.username }}" disabled />
+          </div>
+          <div>
+            <label class="block mb-1">First Name</label>
+            <input type="text" name="first_name" class="w-full bg-zinc-800 border border-gray-700 rounded px-3 py-2 text-white" value="{{ user.first_name }}" />
+          </div>
+        </div>
+
+        <!-- Last Name -->
+        <div>
+          <label class="block mb-1">Last Name</label>
+          <input type="text" name="last_name" class="w-full bg-zinc-800 border border-gray-700 rounded px-3 py-2 text-white" value="{{ user.last_name }}" />
+        </div>
+
+        <!-- Email & Phone -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block mb-1">Email Address</label>
+            <input type="email" class="w-full bg-zinc-800 border border-gray-700 rounded px-3 py-2 text-white" value="{{ user.email }}" disabled />
+          </div>
+          <div>
+            <label class="block mb-1">Phone Number</label>
+            <input type="tel" name="phone_number" class="w-full bg-zinc-800 border border-gray-700 rounded px-3 py-2 text-white" value="{{ user.profile.phone_number }}" />
+          </div>
+        </div>
+
+        <!-- Linked Accounts -->
+        <div>
+          <label class="block font-medium mb-2">Linked Accounts</label>
+          <button type="button" class="border border-gray-600 px-4 py-2 rounded flex items-center gap-2 hover:bg-zinc-800 text-white">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" class="w-4 h-4" alt="Google" />
+            Sign in with Google
+          </button>
+        </div>
+
+        <!-- Delete Account -->
+        <div>
+          <label class="block font-medium mb-2 text-red-500">Delete Account</label>
+          <button type="submit" name="action" value="delete_account" class="text-red-400 underline text-sm">Delete account...</button>
+          <p class="text-xs text-gray-400 mt-1">By deleting your account you will lose all your data</p>
+        </div>
+
+        <!-- Save Button -->
+        <div class="text-right">
+          <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded font-semibold text-sm">
+            Save changes
+          </button>
+        </div>
+      </form>
+    </main>
+  </div>
+</body>
+</html>

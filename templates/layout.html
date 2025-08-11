@@ -1,0 +1,137 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AkawoX</title>
+   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+ 
+
+    <!-- ✅ Google Sign-In Script -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .highlight {
+      position: relative;
+      display: inline-block;
+    }
+    .highlight::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0.1em;
+      width: 100%;
+      height: 0.4em;
+      background-color: #e9d5ff;
+      z-index: -1;
+      transform: skewY(-5deg);
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-800 h-auto overflow-y-auto">
+
+  
+
+
+
+
+  <!-- Header -->
+  <header class="relative p-6 max-w-7xl mx-auto">
+    <div class="flex justify-between items-center">
+     <div class="flex justify-center">
+        <div class="flex items-center gap-1">
+          <img src="{% static 'images/logo.png' %}" alt="Logo" class="w-14 h-14">
+          <span class="font-bold text-2xl">AkawoX</span>
+        </div>
+      </div>
+
+      
+      </nav>
+
+      <!-- Desktop Buttons -->
+     <!-- Desktop Buttons -->
+<div class="hidden md:flex items-center space-x-4">
+    {% if user.is_authenticated %}
+        <span class="text-base font-semibold text-gray-700">Welcome, {{ user.username }}</span>
+        <img src="https://via.placeholder.com/40" alt="Profile" class="w-10 h-10 rounded-full">
+        <form method="post">
+          {% csrf_token %}
+          <input type="button" value="Logout" class="text-red-600 text-base font-semibold">
+        </form>
+    {% else %}
+        <a href="{% url 'login' %}" class="text-base font-semibold text-gray-700">Sign in</a>
+        <a href="{% url 'signup' %}" class="bg-purple-600 text-white px-4 py-2 rounded-full text-base font-semibold shadow-md">Get started today</a>
+    {% endif %}
+</div>
+
+      <!-- Mobile Menu Toggle -->
+      <div class="md:hidden flex items-center space-x-2">
+        <a href="#" class="bg-purple-600 text-white px-4 py-2 rounded-full text-base font-semibold shadow-md">Get started</a>
+        <button class="text-2xl" onclick="toggleMenu()">&#9776;</button>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Menu -->
+    <div id="mobileMenu" class="hidden absolute right-6 mt-4 bg-white border rounded-lg shadow-md p-4 flex flex-col space-y-4 text-right z-50">
+     
+      {% if user.is_authenticated %}
+       
+    
+ 
+     <form method="post" action="{% url 'logout' %}">
+  {% csrf_token %}
+  <button type="submit" class="text-red-600 text-base font-semibold">Logout</button>
+</form
+
+
+    {% else %}
+        <a href="{% url 'login' %}" class="text-base font-semibold text-gray-700">Sign in</a>
+        <a href="{% url 'signup' %}" class="text-base font-semibold text-purple-600">Get started today</a>
+    {% endif %}
+</div>
+  </header>
+
+  <!-- Dynamic Page Content -->
+  <main class="min-h-screen px-4">
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-purple-700 text-white py-8">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <p class="text-sm">&copy; 2025 AkawoX. All rights reserved.</p>
+      <div class="mt-4 flex justify-center space-x-6">
+        <a href="#" class="hover:text-gray-300">Privacy Policy</a>
+        <a href="#" class="hover:text-gray-300">Terms of Service</a>
+        <a href="#" class="hover:text-gray-300">Contact Us</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById('mobileMenu');
+      menu.classList.toggle('hidden');
+    }
+
+    function toggleNotifications() {
+      const dropdown = document.getElementById('notificationDropdown');
+      dropdown.classList.toggle('hidden');
+    }
+
+    document.addEventListener('click', function (e) {
+      const dropdown = document.getElementById('notificationDropdown');
+      if (!e.target.closest('button') && !dropdown.contains(e.target)) {
+        dropdown.classList.add('hidden');
+      }
+    });
+  </script>
+
+</body>
+</html>

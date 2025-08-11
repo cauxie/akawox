@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile Page</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body class="bg-black text-white font-sans">
+
+  <!-- Page container -->
+  <div class="pb-20"> <!-- padding bottom so content doesn't hide behind navbar -->
+
+    <!-- Header -->
+    <div class="text-center py-4">
+      <h1 class="text-lg font-bold">Profile</h1>
+    </div>
+
+    <!-- Profile Card -->
+    <div class="bg-neutral-900 mx-4 p-4 rounded-2xl flex items-center space-x-4">
+     {% if user.profile.image %}
+          <img src="{{ user.profile.image.url }}" class="w-8 h-8 rounded-full" />
+          {% else %}
+          <div class="w-8 h-8 bg-purple-700 text-white flex items-center justify-center rounded-full uppercase font-bold">
+            {{ user.username|first }}
+          </div>
+          {% endif %}
+      <div>
+        <p class="font-bold text-lg">{{ user.first_name }} {{ user.last_name }}</p>
+        <p class="text-gray-400 text-sm">{{ user.email }}</p>
+      </div>
+    </div>
+
+    <!-- Account Section -->
+    <div class="mt-6 px-4">
+      <h2 class="text-lg font-semibold mb-2">Account</h2>
+      <div class="bg-neutral-900 rounded-2xl divide-y divide-neutral-800">
+        <a href="" class="flex items-center p-4 space-x-4">
+          <span class="material-icons text-gray-300">person</span>
+          <span class="flex-1">My Profile</span>
+          <span class="material-icons text-gray-500">chevron_right</span>
+        </a>
+        <a href="#" class="flex items-center p-4 space-x-4">
+          <span class="material-icons text-gray-300">description</span>
+          <span class="flex-1">Reports</span>
+          <span class="material-icons text-gray-500">chevron_right</span>
+        </a>
+        <a href="#" class="flex items-center p-4 space-x-4">
+          <span class="material-icons text-gray-300">send</span>
+          <span class="flex-1">Referrals</span>
+          <span class="material-icons text-gray-500">chevron_right</span>
+        </a>
+        <a href="" class="flex items-center p-4 space-x-4">
+          <span class="material-icons text-gray-300">headset_mic</span>
+          <span class="flex-1">Help &amp; Support</span>
+          <span class="material-icons text-gray-500">chevron_right</span>
+        </a>
+        <a href="#" class="flex items-center p-4 space-x-4">
+          <span class="material-icons text-gray-300">receipt_long</span>
+          <span class="flex-1">Expenses</span>
+          <span class="material-icons text-gray-500">chevron_right</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Preference Section -->
+    <div class="mt-6 px-4">
+      <h2 class="text-lg font-semibold mb-2">Preference</h2>
+      <div class="bg-neutral-900 rounded-2xl divide-y divide-neutral-800">
+        <div class="flex items-center p-4 space-x-4">
+          <span class="material-icons text-gray-300">dark_mode</span>
+          <span class="flex-1">Dark Mode</span>
+          <label class="inline-flex items-center cursor-pointer">
+            <input type="checkbox" class="sr-only peer">
+            <div class="w-11 h-6 bg-gray-600 rounded-full peer peer-checked:bg-blue-500 relative after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:h-5 after:w-5 after:rounded-full after:transition-all peer-checked:after:translate-x-full"></div>
+          </label>
+        </div>
+        <div class="flex items-center p-4 space-x-4">
+          <span class="material-icons text-gray-300">fingerprint</span>
+          <span class="flex-1">Biometrics</span>
+          <label class="inline-flex items-center cursor-pointer">
+            <input type="checkbox" checked class="sr-only peer">
+            <div class="w-11 h-6 bg-gray-600 rounded-full peer peer-checked:bg-blue-500 relative after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:h-5 after:w-5 after:rounded-full after:transition-all peer-checked:after:translate-x-full"></div>
+          </label>
+        </div>
+        <div class="flex items-center p-4 space-x-4">
+          <span class="material-icons text-gray-300">badge</span>
+          <span class="flex-1">NIN Submission</span>
+          <label class="inline-flex items-center cursor-pointer">
+            <input type="checkbox" class="sr-only peer">
+            <div class="w-11 h-6 bg-gray-600 rounded-full peer peer-checked:bg-blue-500 relative after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:h-5 after:w-5 after:rounded-full after:transition-all peer-checked:after:translate-x-full"></div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- More Section -->
+    <div class="mt-6 px-4">
+      <h2 class="text-lg font-semibold mb-2">More</h2>
+      <div class="bg-neutral-900 rounded-2xl">
+        <button class="w-full text-left p-4 flex items-center space-x-4 text-red-500 hover:bg-neutral-800 rounded-2xl">
+          <span class="material-icons">logout</span>
+          <span>Logout</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  
+
+</body>
+</html>

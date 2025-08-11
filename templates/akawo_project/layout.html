@@ -1,0 +1,140 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AkawoX</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .highlight {
+      position: relative;
+      display: inline-block;
+    }
+    .highlight::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0.1em;
+      width: 100%;
+      height: 0.4em;
+      background-color: #e9d5ff;
+      z-index: -1;
+      transform: skewY(-5deg);
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-800">
+
+  <!-- Header -->
+  <header class="relative p-6 max-w-7xl mx-auto">
+    <div class="flex justify-between items-center">
+      <div class="flex items-center space-x-2">
+        <div class="bg-purple-600 rounded-full w-6 h-6"></div>
+        <span class="text-xl font-bold">Akawo<span class="text-purple-600">X</span></span>
+      </div>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center space-x-8 text-base font-semibold text-gray-700">
+        <a href="#">Dashboard</a>
+        <a href="#">About us</a>
+
+        <!-- Notification Icon -->
+        <div class="relative">
+          <button onclick="toggleNotifications()" class="relative focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 17h5l-1.405-1.405C18.79 14.79 18 13.3 18 11.5V8a6 6 0 00-12 0v3.5c0 1.8-.79 3.29-1.595 4.095L3 17h5m4 0v1a2 2 0 11-4 0v-1m4 0h4" />
+            </svg>
+            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">3</span>
+          </button>
+          <!-- Notification Dropdown -->
+          <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-64 bg-white border rounded shadow-lg z-50">
+            <ul class="p-4 space-y-2 text-sm text-gray-700">
+              <li>No new notifications</li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Desktop Buttons -->
+     <!-- Desktop Buttons -->
+<div class="hidden md:flex items-center space-x-4">
+    {% if user.is_authenticated %}
+        <span class="text-base font-semibold text-gray-700">Welcome, {{ user.username }}</span>
+        <img src="https://via.placeholder.com/40" alt="Profile" class="w-10 h-10 rounded-full">
+        <a href="{% url 'logout' %}" class="text-red-600 text-base font-semibold">Logout</a>
+    {% else %}
+        <a href="{% url 'login' %}" class="text-base font-semibold text-gray-700">Sign in</a>
+        <a href="{% url 'signup' %}" class="bg-purple-600 text-white px-4 py-2 rounded-full text-base font-semibold shadow-md">Get started today</a>
+    {% endif %}
+</div>
+
+      <!-- Mobile Menu Toggle -->
+      <div class="md:hidden flex items-center space-x-2">
+        <a href="#" class="bg-purple-600 text-white px-4 py-2 rounded-full text-base font-semibold shadow-md">Get started</a>
+        <button class="text-2xl" onclick="toggleMenu()">&#9776;</button>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Menu -->
+    <div id="mobileMenu" class="hidden absolute right-6 mt-4 bg-white border rounded-lg shadow-md p-4 flex flex-col space-y-4 text-right z-50">
+      <a href="#" class="text-base font-semibold text-gray-700">Dashboard</a>
+      <a href="#" class="text-base font-semibold text-gray-700">About us</a>
+      <a href="#" class="text-base font-semibold text-gray-700 flex items-center space-x-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M15 17h5l-1.405-1.405C18.79 14.79 18 13.3 18 11.5V8a6 6 0 00-12 0v3.5c0 1.8-.79 3.29-1.595 4.095L3 17h5m4 0v1a2 2 0 11-4 0v-1m4 0h4" />
+        </svg>
+        <span>Notifications</span>
+      </a>
+      {% if user.is_authenticated %}
+        <span class="text-base font-semibold text-gray-700">Welcome, {{ user.username }}</span>
+        <a href="{% url 'logout' %}" class="text-red-600 text-base font-semibold">Logout</a>
+    {% else %}
+        <a href="{% url 'login' %}" class="text-base font-semibold text-gray-700">Sign in</a>
+        <a href="{% url 'signup' %}" class="text-base font-semibold text-purple-600">Get started today</a>
+    {% endif %}
+</div>
+  </header>
+
+  <!-- Dynamic Page Content -->
+  <main class="min-h-screen px-4">
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-purple-700 text-white py-8">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <p class="text-sm">&copy; 2025 AkawoX. All rights reserved.</p>
+      <div class="mt-4 flex justify-center space-x-6">
+        <a href="#" class="hover:text-gray-300">Privacy Policy</a>
+        <a href="#" class="hover:text-gray-300">Terms of Service</a>
+        <a href="#" class="hover:text-gray-300">Contact Us</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById('mobileMenu');
+      menu.classList.toggle('hidden');
+    }
+
+    function toggleNotifications() {
+      const dropdown = document.getElementById('notificationDropdown');
+      dropdown.classList.toggle('hidden');
+    }
+
+    document.addEventListener('click', function (e) {
+      const dropdown = document.getElementById('notificationDropdown');
+      if (!e.target.closest('button') && !dropdown.contains(e.target)) {
+        dropdown.classList.add('hidden');
+      }
+    });
+  </script>
+
+</body>
+</html>

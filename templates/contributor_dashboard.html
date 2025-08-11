@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Akawo Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+  <script>
+    function toggleModal() {
+      const modal = document.getElementById('createGroupModal');
+      modal.classList.toggle('hidden');
+      modal.classList.toggle('flex');
+    }
+  </script>
+</head>
+<body>
+<div class="min-h-screen bg-black text-white px-4 pt-6 pb-40 font-sans relative overflow-x-hidden">
+
+  <main>
+    <!-- Header -->
+    <div class="relative mb-6">
+      <div class="flex items-center space-x-2 p-2 border border-gray-300 rounded-full shadow-lg bg-zinc-900 w-fit">
+        {% if user.profile.image %}
+          <img src="{{ user.profile.image.url }}" class="w-8 h-8 rounded-full" />
+        {% else %}
+          <div class="w-8 h-8 bg-gray-700 text-white flex items-center justify-center rounded-full uppercase font-bold">
+            {{ user.username|first }}
+          </div>
+        {% endif %}
+        <p class="text-sm text-gray-400">Welcome Organizer.</p>
+        <h1 class="text-lg font-bold text-white">{{ user.first_name }} {{ user.last_name }}</h1>
+      </div>
+
+      <!-- Light Mode Button -->
+      <button class="absolute top-0 right-0 text-white text-xl p-2">
+        <span class="material-symbols-outlined">light_mode</span>
+      </button>
+    </div>
+
+    <!-- Group Stats & History -->
+    <div class="flex items-center justify-between mb-4">
+      <div class="text-2xl font-bold tracking-wider">
+        <span class="text-xl md:text-2xl font-bold">Groups ({{ groups.count }})</span>
+      </div>
+      <a href="#" class="bg-blue-400 text-black px-4 py-2 rounded-full text-sm font-semibold">History</a>
+    </div>
+
+    <hr class="border-l border-zinc-900 w-70 mb-4"/>
+
+    <!-- Navigation cards -->
+    <div class="grid grid-cols-3 gap-4">
+      <!-- All your cards here -->
+      <!-- (You already had these correctly written, no changes needed inside individual cards) -->
+
+      <!-- Card 1 to Card 9: use your existing card blocks exactly here -->
+      <!-- ... -->
+
+ <!-- Card 1: My Groups -->
+    <a href="{% url 'contributor_dash' %}" class="bg-zinc-900 rounded-2xl p-4 flex flex-col items-start shadow">
+      <div class="w-10 h-10 bg-zinc-800 rounded-full flex items-center justify-center mb-2">
+        <!-- icon here -->
+         <span class="material-symbols-outlined text-blue-600">
+groups
+</span>
+      </div>
+      <div class="text-sm font-small text-white">My Groups</div>
+    </a>
+
+    <!-- Card 2: Wallet -->
+    <a href="{% url 'contributor_wallet' %}" class="bg-zinc-900 rounded-2xl p-4 flex flex-col items-start shadow">
+      <!-- Replace with icon -->
+      <div class="w-10 h-10 bg-zinc-800 rounded-full flex items-center justify-center mb-2">
+        <!-- icon here -->
+         <span class="material-symbols-outlined text-pink-500 ">
+wallet
+</span>
+
+      </div>
+      <div class="text-sm font-small text-white">Wallet</div>
+    </a>
+
+      <!-- Card 3: join group -->
+    <button onclick="toggleModal()" class="bg-zinc-900 rounded-2xl p-4 flex flex-col items-start shadow">
+      <!-- Replace with icon -->
+      <div class="w-10 h-10 bg-zinc-800 rounded-full flex items-center justify-center mb-2">
+        <!-- icon here -->
+         <span class="material-symbols-outlined text-orange-500 ">
+account_tree
+</span>
+
+      </div>
+      <div class="text-sm font-small text-white">Join Group</div>
+    </button>
+
+     <!-- Card 4: contribution -->
+    <a href="{% url 'contributor_paydetails' %}" class="bg-zinc-900 rounded-2xl p-4 flex flex-col items-start shadow">
+      <!-- Replace with icon -->
+      <div class="w-10 h-10 bg-zinc-800 rounded-full flex items-center justify-center mb-2">
+        <!-- icon here -->
+         <span class="material-symbols-outlined text-orange-500 ">
+send_money
+</span>
+
+      </div>
+      <div class="text-sm font-small text-white">Contributions</div>
+    </a>
+
+      <!-- Card 5: withdrawal -->
+    <a href="" class="bg-zinc-900 rounded-2xl p-4 flex flex-col items-start shadow">
+      <!-- Replace with icon -->
+      <div class="w-10 h-10 bg-zinc-800 rounded-full flex items-center justify-center mb-2">
+        <!-- icon here -->
+         <span class="material-symbols-outlined text-green-500 ">view_kanban
+</span>
+
+      </div>
+      <div class="text-sm font-small text-white">Withdrawals</div>
+    </a>
+
+      <!-- Card 6: reports -->
+    <a href="" class="bg-zinc-900 rounded-2xl p-4 flex flex-col items-start shadow">
+      <!-- Replace with icon -->
+      <div class="w-10 h-10 bg-zinc-800 rounded-full flex items-center justify-center mb-2">
+        <!-- icon here -->
+         <span class="material-symbols-outlined text-blue-300 ">article
+</span>
+
+      </div>
+      <div class="text-sm font-small text-white">Reports</div>
+    </a>
+   
+  <!-- Card 7: REFFERAL GIFT -->
+    <a href="#" class="bg-zinc-900 rounded-2xl p-4 flex flex-col items-start shadow">
+      <!-- Replace with icon -->
+      <div class="w-10 h-10 bg-zinc-800 rounded-full flex items-center justify-center mb-2">
+        <!-- icon here -->
+        <span class="material-symbols-outlined text-green-900">
+featured_seasonal_and_gifts
+</span>
+      </div>
+      <div class="text-sm font-small text-white">Gift User</div>
+    </a>
+   
+<!-- Card 7: settings -->
+    <a href="{% url 'contributor_setting' %}" class="bg-zinc-900 rounded-2xl p-4 flex flex-col items-start shadow">
+      <!-- Replace with icon -->
+      <div class="w-10 h-10 bg-zinc-800 rounded-full flex items-center justify-center mb-2">
+        <!-- icon here -->
+        <span class="material-symbols-outlined text-purple-800">
+settings
+</span>
+      </div>
+      <div class="text-sm font-small text-white">Settings</div>
+    </a>
+
+   <!-- Card 7: more -->
+    <a href="#" class="bg-zinc-900 rounded-2xl p-4 flex flex-col items-start shadow">
+      <!-- Replace with icon -->
+      <div class="w-10 h-10 bg-zinc-800 rounded-full flex items-center justify-center mb-2">
+        <!-- icon here -->
+        <span class="material-symbols-outlined text-purple-700">
+more_horiz
+</span>
+      </div>
+      <div class="text-sm font-small text-white">More</div>
+    </a> 
+   
+  </div>
+
+
+ 
+
+<!-- Footer Navbar -->
+<div x-data="{ active: 'home' }" class="fixed bottom-0 left-0 right-0 flex justify-around items-end py-3 text-gray-400 bg-black z-50">
+  <!-- Home -->
+  <a href="{% url 'organizer_dashboard' %}" @click="active = 'home'" class="flex flex-col items-center cursor-pointer">
+    <div :class="active === 'home' ? 'bg-blue-600 text-white -translate-y-4' : 'text-gray-400'" class="p-3 rounded-full transition-all duration-200 flex items-center justify-center w-12 h-12">
+      <span class="material-symbols-outlined">home</span>
+    </div>
+    <span x-show="active === 'home'" class="text-xs mt-1 text-white">Home</span>
+  </a>
+
+  <!-- Send -->
+  <a href="/send" @click="active = 'send'" class="flex flex-col items-center cursor-pointer">
+    <div :class="active === 'send' ? 'bg-blue-600 text-white -translate-y-3' : 'text-gray-400'" class="p-3 rounded-full transition-all duration-200 flex items-center justify-center w-12 h-12">
+      <span class="material-symbols-outlined">bolt</span>
+    </div>
+    <span x-show="active === 'send'" class="text-xs mt-1 text-white">Send</span>
+  </a>
+
+  <!-- Help -->
+  <a href="/help" @click="active = 'help'" class="flex flex-col items-center cursor-pointer">
+    <div :class="active === 'help' ? 'bg-blue-600 text-white -translate-y-3' : 'text-gray-400'" class="p-3 rounded-full transition-all duration-200 flex items-center justify-center w-12 h-12">
+      <span class="material-symbols-outlined">help</span>
+    </div>
+    <span x-show="active === 'help'" class="text-xs mt-1 text-white">Help</span>
+  </a>
+
+  <!-- Profile -->
+  <a href="{% url 'account_settings' %}" @click="active = 'profile'" class="flex flex-col items-center cursor-pointer">
+    <div :class="active === 'profile' ? 'bg-blue-600 text-white -translate-y-3' : 'text-gray-400'" class="p-3 rounded-full transition-all duration-200 flex items-center justify-center w-12 h-12">
+      <span class="material-symbols-outlined">account_circle</span>
+    </div>
+    <span x-show="active === 'profile'" class="text-xs mt-1 text-white">Profile</span>
+  </a>
+</div>
+
+
+<!-- Join Group Modal -->
+<div id="createGroupModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+  <div class="bg-gray-900 w-full max-w-sm rounded-2xl shadow-lg p-6 border border-gray-700">
+    
+    <!-- Modal Heading -->
+    <h3 class="text-lg font-bold text-purple-400 mb-4 text-center">Join Akawo Group</h3>
+    
+    <!-- Join Form -->
+    <form method="POST" action="{% url 'join_group' %}" class="space-y-5">
+      {% csrf_token %}
+      
+      <!-- Input Field -->
+      <div>
+        <label class="block mb-2 text-sm font-medium text-gray-300">Enter Group Code</label>
+        <input 
+          type="text" 
+          name="referral_code" 
+          class="w-full rounded-lg px-4 py-3 bg-gray-800 text-white placeholder-gray-400 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500" 
+          required 
+          placeholder="e.g., AKW-456XYZ">
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex gap-3">
+        <button 
+          type="button" 
+          onclick="toggleModal()" 
+          class="flex-1 bg-gray-700 text-gray-300 px-4 py-3 rounded-lg hover:bg-gray-600 transition">
+          Cancel
+        </button>
+        <button 
+          type="submit" 
+          class="flex-1 bg-purple-600 text-white px-4 py-3 rounded-lg hover:bg-purple-700 transition">
+          Join
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- Include Material Icons -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+ 
+
+    </main>
+  </div>
+</body>
+</html>

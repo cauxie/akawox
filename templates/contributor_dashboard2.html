@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Contributions</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white min-h-screen flex flex-col">
+
+  <!-- Top Bar -->
+  <header class="flex items-center gap-3 p-4 border-b border-gray-800">
+    <a href="javascript:history.back()" class="text-white hover:text-purple-300">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </a>
+    <h1 class="text-lg font-bold">My Contributions</h1>
+  </header>
+
+  <!-- Overview Cards -->
+  <section class="p-4 space-y-4">
+    <div class="bg-green-900/40 p-4 rounded-xl shadow border border-green-700">
+      <p class="text-sm font-medium text-green-400">Total Contributions</p>
+      <h3 class="text-xl font-bold text-green-300 mt-2">₦{{ total_contributions }}</h3>
+    </div>
+    <div class="bg-blue-900/40 p-4 rounded-xl shadow border border-blue-700">
+      <p class="text-sm font-medium text-blue-400">Last Contribution</p>
+      <h3 class="text-xl font-bold text-blue-300 mt-2">₦{{ last_contribution.amount }}</h3>
+    </div>
+    <div class="bg-red-900/40 p-4 rounded-xl shadow border border-red-700">
+      <p class="text-sm font-medium text-red-400">Next Due Date</p>
+      <h3 class="text-xl font-bold text-red-300 mt-2">{{ next_due_date|date:"j M Y" }}</h3>
+    </div>
+  </section>
+
+  <!-- Contribution History -->
+  <section class="flex-1 p-4 bg-gray-900/40 rounded-t-2xl">
+    <h2 class="text-lg font-bold mb-4">Contribution History</h2>
+
+    <div class="space-y-4">
+      {% for contribution in contributions %}
+      <div class="bg-gray-800 p-4 rounded-xl shadow border border-gray-700">
+        <p class="text-sm text-gray-400">Amount</p>
+        <p class="text-lg font-bold text-gray-200">₦{{ contribution.amount }}</p>
+
+        <p class="text-sm text-gray-400 mt-3">Date</p>
+        <p class="text-base text-gray-300">{{ contribution.contributed_at|date:"M j, Y - H:i A" }}</p>
+
+        <p class="text-sm text-gray-400 mt-3">Status</p>
+        {% if contribution.status == 'completed' %}
+          <span class="inline-block px-3 py-1 mt-1 text-xs font-semibold text-green-300 bg-green-900/50 rounded-full">
+            Completed
+          </span>
+        {% else %}
+          <span class="inline-block px-3 py-1 mt-1 text-xs font-semibold text-yellow-300 bg-yellow-900/50 rounded-full">
+            Pending
+          </span>
+        {% endif %}
+      </div>
+      {% empty %}
+      <p class="text-center text-gray-500">No contributions found.</p>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+</body>
+</html>

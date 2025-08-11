@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Groups</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body class="bg-black text-white min-h-screen">
+
+  <main class="p-4 max-w-3xl mx-auto">
+
+    <!-- Back Button -->
+    <div class="mb-4">
+      <a href="javascript:history.back()" class="inline-flex items-center text-white hover:text-purple-500">
+        <span class="material-symbols-outlined mr-1">arrow_back</span>
+       
+      </a>
+    </div>
+
+    <!-- Centered Heading -->
+    <h2 class="text-2xl font-bold text-center text-white mb-6">Your Groups</h2>
+
+    <!-- Group Cards or Empty Message -->
+    {% if groups.exists %}
+      <div class="space-y-4">
+        {% for group in groups %}
+          <a href="{% url 'paydetails' group.id %}" class="block bg-zinc-900 hover:bg-zinc-800 transition rounded-lg p-4 shadow border border-zinc-700">
+            <div class="flex justify-between items-start mb-2">
+              <div>
+                <h3 class="text-lg font-semibold text-purple-400">{{ group.group_name }}</h3>
+                <p class="text-sm text-gray-400 capitalize">{{ group.contribution_cycle }}</p>
+              </div>
+              <span class="material-symbols-outlined text-purple-500">groups</span>
+            </div>
+            <div class="flex justify-between text-sm text-gray-300">
+              <span>Created: {{ group.created_at|date:"j F Y" }}</span>
+              <span>{{ group.members.count }} Member{{ group.members.count|pluralize }}</span>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-center text-gray-400 italic mt-10">You haven't joined any group.</p>
+    {% endif %}
+
+  </main>
+
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Welcome | Akawo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Ensure video covers entire viewport */
+    video#bg-video {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: -1;
+    }
+  </style>
+</head>
+<body class="relative bg-black text-white min-h-screen overflow-hidden">
+
+  <!-- Background Video -->
+  <video id="bg-video" autoplay muted loop playsinline>
+    <source src="path/to/your/background.mp4" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+
+  <!-- Purple overlay -->
+  <div class="fixed top-0 left-0 w-full h-full bg-purple-900 bg-opacity-70 z-0"></div>
+
+  <!-- Content -->
+  <div class="relative z-10 flex flex-col min-h-screen justify-between items-center px-6 py-10">
+
+    <!-- App Logo at top -->
+    <div class="pt-4">
+      <img src="{% static 'images/logo12.png' %}" alt="Akawo Logo" class="h-16 mx-auto" />
+    </div>
+
+    <!-- Optional welcome text -->
+    <div class="text-center max-w-md mx-auto mt-10">
+      <h1 class="text-4xl font-extrabold mb-4">Akawo <span class="text-purple-400">made secured</span><br />for All personnels</h1>
+      <p class="text-lg max-w-sm mx-auto text-purple-200">Most savings platforms seem secure, but aren’t. We built Akawo the opposite way, so organizers can’t run with your money.</p>
+    </div>
+
+    <!-- Continue Button at bottom -->
+    <div class="w-full max-w-md mb-6">
+      <a href="/signup" class="block w-full bg-purple-600 hover:bg-purple-700 text-white text-center font-semibold py-4 rounded-full shadow-lg transition">
+        Continue
+      </a>
+    </div>
+
+  </div>
+
+</body>
+</html>
