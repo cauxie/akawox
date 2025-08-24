@@ -63,7 +63,12 @@ DEBUG = os.getenv("DEBUG", "False") == "True"
  
 
 
-ALLOWED_HOSTS = ['akawox.onrender.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = [
+    "akawo-x.onrender.com",
+    "localhost",
+    "127.0.0.1"
+]
+
 
 
 
