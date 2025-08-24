@@ -14,15 +14,19 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
 
-PAYSTACK_SECRET_KEY = os.getenv("PAYSTACK_SECRET_KEY")
-PAYSTACK_PUBLIC_KEY = os.getenv("PAYSTACK_PUBLIC_KEY")
-PAYSTACK_WEBHOOK_SECRET = os.getenv("PAYSTACK_WEBHOOK_SECRET")
+# Paystack Configuration
+PAYSTACK_SECRET_KEY = os.getenv(
+    "PAYSTACK_SECRET_KEY",
+    "sk_test_ba301a0ef378d6025f5536cf5b7fee93aa650a73"  # fallback for local dev
+)
+PAYSTACK_PUBLIC_KEY = os.getenv("PAYSTACK_PUBLIC_KEY", "pk_test_yourpublickey")
+PAYSTACK_WEBHOOK_SECRET = os.getenv("PAYSTACK_WEBHOOK_SECRET", "your_webhook_secret")
 
-
-from decouple import config
-
-PAYSTACK_SECRET_KEY = "sk_test_ba301a0ef378d6025f5536cf5b7fee93aa650a73"
-PAYSTACK_CALLBACK_URL = 'http://127.0.0.1:8000/pay/verify/'
+# Callback URL (use local for dev, Render for prod)
+PAYSTACK_CALLBACK_URL = os.getenv(
+    "PAYSTACK_CALLBACK_URL",
+    "http://127.0.0.1:8000/pay/verify/"  # default for local testing
+)
 
 
 
@@ -54,9 +58,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-cqqh0^8%6uqqj7b@82ugh+1&e=%c7*f$hz)5=%b4*hfs-50dgb'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = []
+ 
+
+
+ALLOWED_HOSTS = ['akawox.onrender.com', '127.0.0.1', 'localhost']
+
+
+
+
 
 #AUTH_USER_MODEL = 'core.user'
 
@@ -150,6 +161,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [ BASE_DIR / 'static' ]
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
 # Default primary key field type
@@ -161,3 +173,10 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = '/role/'
 LOGOUT_REDIRECT_URL = '/'
 
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "christiansomtochukwu6@gmail.com"
+EMAIL_HOST_PASSWORD = "rewd ebri cqdz tnec"  # use Gmail App Password
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

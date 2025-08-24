@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Groups</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Material Symbols -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+
+<body class="bg-black text-white min-h-screen p-4">
+
+  <!-- Top Bar -->
+  <div class="flex items-center mb-6">
+    <a href="javascript:history.back()" class="text-white hover:text-purple-400">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </a>
+    <h2 class="text-xl font-bold flex-grow text-center -ml-6">My Groups</h2>
+  </div>
+
+<!-- Group Cards or Message -->
+  {% if groups.exists %}
+    <div class="grid gap-4">
+      {% for group in groups %}
+        <a href="{% url 'organizer_wallet' group.id %}" class="block bg-zinc-900 rounded-xl p-4 shadow hover:bg-zinc-800 transition duration-200">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-purple-800 text-white rounded-full flex items-center justify-center font-bold">
+                {{ group.group_name|first }}
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold">{{ group.group_name }}</h3>
+                <p class="text-sm text-gray-400 capitalize">{{ group.contribution_cycle }}</p>
+              </div>
+            </div>
+            <span class="material-symbols-outlined text-purple-400">account_balance_wallet</span>
+          </div>
+
+          <div class="flex justify-between text-sm text-gray-400 mt-2">
+            <span>Created: {{ group.created_at|date:"j F Y" }}</span>
+            <span>{{ group.members.count }} Member{{ group.members.count|pluralize }}</span>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-center text-gray-500 italic mt-10">No group has been created here.</p>
+  {% endif %}
+
+</body>
+</html>

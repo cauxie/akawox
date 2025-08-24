@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Notifications</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black">
+
+  <div class="max-w-4xl mx-auto p-6">
+    <!-- Back Button -->
+    <a href="javascript:history.back()" 
+       class="inline-flex items-center text-white hover:text-purple-600 mb-4">
+      <!-- Heroicon arrow-left -->
+      <svg xmlns="http://www.w3.org/2000/svg" 
+           fill="none" viewBox="0 0 24 24" stroke-width="2" 
+           stroke="currentColor" class="w-5 h-5 mr-2">
+        <path stroke-linecap="round" stroke-linejoin="round" 
+              d="M15 19l-7-7 7-7" />
+      </svg>
+      Back
+    </a>
+
+    <!-- Page Title -->
+    <h1 class="text-2xl font-bold mb-6">Your Notifications</h1>
+
+    {% if notifications %}
+      <ul class="space-y-4">
+        {% for note in notifications %}
+          <li class="p-4 rounded-lg shadow bg-zinc-800 {% if not note.is_read %}border-l-4 border-blue-500{% endif %}">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="text-xs uppercase tracking-wider text-gray-500">
+                  {{ note.get_notification_type_display }}
+                </span>
+                <p class="mt-1 text-gray-800">{{ note.message }}</p>
+                <p class="text-sm text-gray-400">{{ note.created_at|date:"M d, Y H:i" }}</p>
+
+                <!-- Optional links depending on type -->
+                {% if note.contribution %}
+                  <a href="#" class="text-blue-600 text-sm hover:underline">View Contribution</a>
+                {% elif note.payment %}
+                  <a href="#" class="text-blue-600 text-sm hover:underline">View Payment</a>
+                {% elif note.payout %}
+                  <a href="#" class="text-blue-600 text-sm hover:underline">View Payout</a>
+                {% elif note.report %}
+                  <a href="#" class="text-blue-600 text-sm hover:underline">View Report</a>
+                {% endif %}
+              </div>
+
+              {% if not note.is_read %}
+                <a href="#" 
+                   class="ml-4 text-blue-600 hover:underline text-sm">
+                   Mark as read
+                </a>
+              {% endif %}
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-gray-500">No notifications yet.</p>
+    {% endif %}
+  </div>
+
+</body>
+</html>

@@ -1,12 +1,12 @@
 # core/views.py
 
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.db import IntegrityError
-from .models import UserProfile, AkawoGroup, Report, ContributionHistory, GroupMember, Contribution, Payment
+from .models import UserProfile, AkawoGroup, Report, ContributionHistory, GroupMember, Contribution, Payment, Withdrawal
 from .utils import generate_referral_code
 from datetime import datetime, date
 import requests
@@ -21,6 +21,9 @@ from django.core.files.base import ContentFile
 from io import BytesIO
 import qrcode
 from .models import Payout, CustomPayout
+from django.shortcuts import get_object_or_404
+from .models import Transaction
+
 
 
 @login_required
@@ -365,11 +368,7 @@ def organizer_contribution(request):
     return render(request, 'organizer_contribution.html', {'groups': groups})
 
 
-@login_required
-def group_contributions(request, group_id):
-    group = get_object_or_404(AkawoGroup, id=group_id, organizer=request.user)
-    contributions = Contribution.objects.filter(member__group=group).select_related('member__user').order_by('-contributed_at')
-    return render(request, 'contribution.html', {'group': group, 'contributions': contributions})
+
 
 @login_required
 def organizer_withdrawal(request):
@@ -432,14 +431,7 @@ def manage_group(request, group_id):
     return render(request, 'manage.html', {'group': group})
 
 
-def group_contributions(request, group_id):
-    group = AkawoGroup.objects.get(id=group_id)
-    contributions = Contribution.objects.filter(member__group=group)
 
-    return render(request, 'contribution.html', {
-        'group': group,
-        'contributions': contributions
-    })
 
 def contributor_wallet(request):
     group_member = get_object_or_404(GroupMember, user=request.user)
@@ -509,7 +501,9 @@ def paystack_webhook(request):
 def contributor_dashboard(request):
     user_groups = GroupMember.objects.filter(user=request.user).select_related('group')
     groups = [gm.group for gm in user_groups]
-    return render(request, 'contributor_dashboard.html', {'groups': groups})
+    group_count = len(groups)
+    return render(request, 'contributor_dashboard.html', {'groups': groups, 'group_count': group_count})
+
 
 
 @login_required
@@ -667,7 +661,7 @@ def contributor_paydetails(request):
     return render(request, 'paydetails.html', {'groups': groups})
 
 # views.py
-from django.shortcuts import render, redirect, get_object_or_404
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import AkawoGroup, GroupMember
@@ -712,6 +706,15 @@ def group_contributions(request, group_id):
     group = get_object_or_404(AkawoGroup, id=group_id)
     group_member = get_object_or_404(GroupMember, group=group, user=request.user)
 
+    contributions = Contribution.objects.filter(member=group_member).order_by("-created_at")
+
+    return render(request, "paydetails.html", {
+        "group": group,
+        "group_member": group_member,
+        "contributions": contributions,
+    })
+
+
     # Only this contributor's contributions
     contributions = Contribution.objects.filter(member=group_member).order_by("-created_at")
 
@@ -721,7 +724,7 @@ def group_contributions(request, group_id):
         "contributions": contributions,
     })
     
-    from django.shortcuts import render, get_object_or_404
+     
 from .models import AkawoGroup, GroupMember, Contribution
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -775,3 +778,161 @@ def terms_and_conditions(request):
 
 def privacy_policy(request):
     return render(request, 'policy.html')
+
+
+from django.core.mail import send_mail
+from django.contrib import messages
+from django.conf import settings
+
+
+def contributor_report(request, group_id):
+    group = get_object_or_404(AkawoGroup, id=group_id)
+
+    if request.method == "POST":
+        subject = request.POST.get("subject")
+        message = request.POST.get("message")
+        contributor = request.user.username  
+
+        # Email content
+        email_subject = f"[Contributor Report] {subject} - {group.group_name}"
+        email_message = f"""
+        You have received a new report for your group "{group.group_name}".
+        
+        From Contributor: {contributor}
+        Message:
+        {message}
+        """
+
+        try:
+            send_mail(
+                email_subject,
+                email_message,
+                settings.DEFAULT_FROM_EMAIL,   # from email
+                [group.organizer.email],       # organizer email
+                fail_silently=False,
+            )
+            messages.success(request, "Report sent successfully!")
+            return redirect("contributor_dashboard")
+        except Exception as e:
+            messages.error(request, f"Failed to send report: {e}")
+
+    return render(request, "contributor_report.html", {"group": group})
+
+@login_required
+def contributor_groups(request):
+    user = request.user
+    # fetch actual groups the user is part of
+    groups = AkawoGroup.objects.filter(group_members__user=user)
+    return render(request, 'contributor_groups.html', {'groups': groups})
+
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from django.urls import reverse
+
+@login_required
+def me_view(request):
+    user = request.user
+
+    if user.profile.role == "organizer":
+        profile_url = reverse("account_settings")
+        reports_url = reverse("organizer_reports")
+    else:
+        profile_url = reverse("contributor_setting")
+        reports_url = reverse("contributor_groups")
+
+    return render(request, "me.html", {
+        "profile_url": profile_url,
+        "reports_url": reports_url,
+    })
+
+@login_required
+def dashboard_redirect(request):
+    user = request.user
+
+    # Check if user is an organizer
+    if AkawoGroup.objects.filter(organizer=user).exists():
+        return redirect("organizer_dashboard")
+
+    # Otherwise check if user is a contributor
+    if GroupMember.objects.filter(user=user).exists():
+        return redirect("contributor_dashboard")
+
+    # Default fallback (e.g. no role yet)
+    return redirect("select_role")
+
+    # views.py
+
+from django.contrib.auth.decorators import login_required
+from .models import Notification
+
+@login_required
+def notifications_list(request):
+    """List all notifications for the logged-in user"""
+    notifications = Notification.objects.filter(user=request.user).order_by("-created_at")
+    return render(request, "notifications.html", {"notifications": notifications})
+
+@login_required
+def mark_as_read(request, notification_id):
+    """Mark a notification as read"""
+    notification = get_object_or_404(Notification, id=notification_id, user=request.user)
+    notification.is_read = True
+    notification.save()
+    return redirect("notifications")
+
+
+    
+
+@login_required
+def transaction_history(request):
+    transactions = Transaction.objects.filter(user=request.user).order_by("-created_at")
+    return render(request, "transaction_history.html", {"transactions": transactions})
+
+@login_required
+def organizer_list(request):
+    groups = AkawoGroup.objects.filter(organizer=request.user)
+    return render(request, 'organizer_list.html', {'groups': groups})
+
+
+@login_required
+def organizer_wallet(request, group_id):
+    group = get_object_or_404(AkawoGroup, id=group_id, organizer=request.user)
+
+    # Get all GroupMember objects for this group
+    group_members = GroupMember.objects.filter(group=group)
+
+    # Fetch contributions for these group members
+    contributions = Contribution.objects.filter(member__in=group_members)
+
+    return render(request, 'organizer_wallet.html', {
+        'group': group,
+        'contributions': contributions
+    })
+
+@login_required
+def contributor_groups2(request):
+    """Show all groups where the logged-in user is a member"""
+    groups = GroupMember.objects.filter(user=request.user)
+    return render(request, "contributor_groups2.html", {"groups": groups})
+
+
+@login_required
+def contributor_withdrawals(request, group_id):
+    group = get_object_or_404(AkawoGroup, id=group_id)
+
+    # Get the GroupMember instance for this user in this group
+    try:
+        member = GroupMember.objects.get(user=request.user, group=group)
+    except GroupMember.DoesNotExist:
+        messages.error(request, "You are not a member of this group.")
+        return redirect('contributor_dashboard')
+
+    # Get all withdrawals for this member
+    withdrawals = Withdrawal.objects.filter(member=member).order_by('-created_at')
+
+    return render(request, 'contributor_withdrawals.html', {
+        'group': group,
+        'withdrawals': withdrawals
+    })
+
+

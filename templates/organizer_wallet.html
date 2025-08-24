@@ -1,51 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Your Groups</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Organizer Wallet</title>
+
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Material Symbols -->
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            purple: {
+              800: '#6B21A8',
+              600: '#9333EA',
+            },
+            zinc: {
+              900: '#18181B',
+              800: '#27272A',
+            },
+          },
+        },
+      },
+    };
+  </script>
 </head>
-<body class="bg-black text-white min-h-screen relative">
 
-  <main class="p-4">
+<body class="bg-black text-white min-h-screen p-4">
+  <!-- Back Button + Title -->
+  <div class="flex items-center mb-6">
+    <a href="{% url 'organizer_dashboard' %}" class="inline-flex items-center text-white hover:text-purple-500">
+      <span class="material-symbols-outlined mr-1">arrow_back</span>
+    </a>
+    <h2 class="text-center text-xl font-bold flex-grow -ml-6">Organizer Wallet</h2>
+  </div>
 
-    <!-- Back Button -->
-    <div class="flex items-center mb-6">
-      <a href="javascript:history.back()" class="text-white hover:text-purple-400 text-2xl mr-4">←</a>
-      <h1 class="text-xl font-bold">Groups Wallet ({{ groups.count }})</h1>
+  <!-- Wallet Summary Card -->
+  <div class="bg-zinc-900 rounded-2xl p-6 shadow-lg">
+    <h3 class="text-lg font-semibold mb-4">Group: {{ group.group_name }}</h3>
+
+    <div class="mb-4">
+      <p class="text-sm text-gray-400">Total Contributions</p>
+      <p class="text-2xl font-bold text-purple-400">₦{{ total_contributions }}</p>
     </div>
 
+    <div class="mb-6">
+      <p class="text-sm text-gray-400">Your 2% Commission (per cycle)</p>
+      <p class="text-2xl font-bold text-green-400">₦{{ commission }}</p>
+    </div>
 
-    
-
-    <!-- Group Cards or Empty Message -->
-    {% if groups.exists %}
-      <div class="space-y-4">
-        {% for group in groups %}
-          <a href="" class="block bg-zinc-900 hover:bg-zinc-800 transition rounded-lg p-4 shadow border border-zinc-700">
-            <div class="flex justify-between items-start mb-2">
-              <div>
-                <h3 class="text-lg font-semibold text-purple-400">{{ group.group_name }}</h3>
-                <p class="text-sm text-gray-400 capitalize">{{ group.contribution_cycle }}</p>
-              </div>
-              <span class="material-symbols-outlined text-purple-500">groups</span>
-            </div>
-            <div class="flex justify-between text-sm text-gray-300">
-              <span>Created: {{ group.created_at|date:"j F Y" }}</span>
-              <span>{{ group.members.count }} Member{{ group.members.count|pluralize }}</span>
-            </div>
-          </a>
-        {% endfor %}
-      </div>
-    {% else %}
-      <p class="text-center text-gray-400 italic mt-10">No group has been created here.</p>
-    {% endif %}
-
-   
-
-  </main>
-
+    <!-- Withdraw Button -->
+    <button class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-semibold transition">
+      Withdraw Commission
+    </button>
+  </div>
 </body>
 </html>

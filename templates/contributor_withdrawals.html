@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ group.group_name }} Withdrawals</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body class="bg-black text-white min-h-screen">
+
+  <!-- Header with Back Button -->
+  <div class="flex items-center p-4 border-b border-gray-800">
+    <a href="{% url 'contributor_groups' %}" class="material-icons text-purple-500">arrow_back</a>
+    <h1 class="text-lg font-semibold mx-auto">{{ group.group_name }} Withdrawals</h1>
+  </div>
+
+  <div class="p-4 space-y-3">
+    {% if withdrawals %}
+      {% for withdrawal in withdrawals %}
+        <div class="p-4 bg-zinc-900 rounded-xl border border-gray-800">
+          <p><strong>Amount:</strong> ₦{{ withdrawal.amount }}</p>
+          <p><strong>Date:</strong> {{ withdrawal.created_at|date:"M d, Y H:i" }}</p>
+          <p><strong>Status:</strong> {{ withdrawal.status }}</p>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-center text-gray-500 mt-10">You have no withdrawals in this group.</p>
+    {% endif %}
+  </div>
+
+</body>
+</html>

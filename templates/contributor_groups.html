@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Groups</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body class="bg-black text-white min-h-screen">
+
+  <!-- Back Button + Heading -->
+  <div class="flex items-center p-4 border-b border-gray-800">
+    <a href="" class="material-icons text-purple-500">arrow_back</a>
+    <h1 class="text-lg font-semibold mx-auto">Your Groups</h1>
+  </div>
+
+  <!-- Group Cards -->
+  <div class="p-4 space-y-3">
+   {% for group in groups %}
+<a href="{% url 'contributor_report' group.id %}" 
+   class="flex items-center justify-between p-4 bg-[#111] rounded-xl border border-gray-800 
+          hover:bg-gray-900 active:scale-95 transition transform duration-150 ease-in-out">
+  <div class="flex items-center space-x-4">
+    {% if group.photo %}
+      <img src="{{ group.photo.url }}" alt="{{ group.group_name }}" class="w-12 h-12 rounded-full object-cover">
+    {% else %}
+      <div class="w-12 h-12 bg-purple-700 text-white flex items-center justify-center rounded-full uppercase font-bold">
+        {{ group.group_name|slice:":1" }}
+      </div>
+    {% endif %}
+    <span class="font-medium">{{ group.group_name }}</span>
+  </div>
+  <span class="material-icons text-gray-400">chevron_right</span>
+</a>
+{% empty %}
+<p class="text-center text-gray-400">You are not part of any group yet.</p>
+{% endfor %}
+
+  </div>
+
+</body>
+</html>
+
+
+
+

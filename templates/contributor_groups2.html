@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Groups</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body class="bg-black text-white min-h-screen">
+
+  <!-- Header with Back Button -->
+  <div class="flex items-center p-4 border-b border-gray-800">
+    <a href="javascript:history.back()" class="material-icons text-purple-500">arrow_back</a>
+    <h1 class="text-lg font-semibold mx-auto">My Groups</h1>
+  </div>
+
+  <div class="p-4 space-y-3">
+    {% if groups %}
+      {% for membership in groups %}
+        <a href="{% url 'contributor_withdrawals' membership.group.id %}" 
+           class="flex items-center justify-between p-4 bg-zinc-900 rounded-xl hover:bg-zinc-800 transition">
+          <div>
+            <h2 class="font-semibold text-white">{{ membership.group.group_name }}</h2>
+            <p class="text-gray-400 text-sm">Organizer: {{ membership.group.organizer.username }}</p>
+          </div>
+          <span class="material-icons text-gray-400">chevron_right</span>
+        </a>
+      {% endfor %}
+    {% else %}
+      <p class="text-center text-gray-500 mt-10">You are not part of any group yet.</p>
+    {% endif %}
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Transaction History</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white min-h-screen p-4">
+
+  <!-- Header with Back Button -->
+  <div class="flex items-center mb-6">
+    <a href="javascript:history.back()" class="mr-3">
+      <!-- Back Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </a>
+    <h1 class="text-xl font-semibold">Transaction History</h1>
+  </div>
+
+  <!-- Transactions List -->
+  <div class="space-y-4">
+    {% for tx in transactions %}
+      <div class="bg-gray-900 rounded-lg shadow p-4">
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-400">{{ tx.created_at|date:"M d, Y H:i" }}</span>
+          <span class="px-2 py-1 text-xs rounded 
+            {% if tx.status == 'success' %}bg-green-600
+            {% elif tx.status == 'failed' %}bg-red-600
+            {% else %}bg-yellow-600{% endif %}">
+            {{ tx.status|capfirst }}
+          </span>
+        </div>
+        <div class="mt-2">
+          <p class="text-lg font-bold">₦{{ tx.amount }}</p>
+          <p class="text-sm capitalize text-gray-300">{{ tx.transaction_type }}</p>
+          <p class="text-xs text-gray-500">Ref: {{ tx.reference }}</p>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-center text-gray-400">No transactions yet.</p>
+    {% endfor %}
+  </div>
+
+</body>
+</html>

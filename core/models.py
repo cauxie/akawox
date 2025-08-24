@@ -160,5 +160,59 @@ class ContributionHistory(models.Model):
 
 created_at = models.DateTimeField(default=timezone.now)
   
-   
+ # --- Notifications ---
+class Notification(models.Model):
+    NOTIFICATION_TYPES = (
+        ('contribution', 'Contribution'),
+        ('payment', 'Payment'),
+        ('payout', 'Payout'),
+        ('report', 'Report'),
+        ('general', 'General'),
+    )
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notifications")
+    notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES, default='general')
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    # Optional links to related objects
+    contribution = models.ForeignKey(Contribution, on_delete=models.SET_NULL, null=True, blank=True, related_name="notifications")
+    payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, null=True, blank=True, related_name="notifications")
+    payout = models.ForeignKey(Payout, on_delete=models.SET_NULL, null=True, blank=True, related_name="notifications")
+    report = models.ForeignKey(Report, on_delete=models.SET_NULL, null=True, blank=True, related_name="notifications")
+
+    def __str__(self):
+        return f"Notification for {self.user.username} - {self.notification_type}"
   
+class Transaction(models.Model):
+    TRANSACTION_TYPES = [
+        ("contribution", "Contribution"),
+        ("withdrawal", "Withdrawal"),
+        ("payment", "Payment"),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="transactions")
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    transaction_type = models.CharField(max_length=20, choices=TRANSACTION_TYPES)
+    reference = models.CharField(max_length=100, unique=True, null=True, blank=True)
+    status = models.CharField(max_length=20, default="pending")  # success, failed, pending
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.transaction_type} - {self.amount}"
+
+class Withdrawal(models.Model):
+    member = models.ForeignKey(GroupMember, on_delete=models.CASCADE, related_name='withdrawals')
+    group = models.ForeignKey(AkawoGroup, on_delete=models.CASCADE, related_name='withdrawals')
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    status = models.CharField(
+        max_length=20,
+        choices=[('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')],
+        default='pending'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    note = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.member.user.username} - {self.amount} - {self.group.group_name}"
