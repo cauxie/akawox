@@ -73,31 +73,39 @@ def index(request):
 def signup_view(request):
     if request.method == "POST":
         username = request.POST["signup-username"]
-        password = request.POST["signup-password1"]
+        password1 = request.POST["signup-password1"]
+        password2 = request.POST["signup-password2"]
         email = request.POST["signup-email"]
         first_name = request.POST["signup-firstname"]
         last_name = request.POST["signup-lastname"]
 
-        if User.objects.filter(username=username).exists():
-            messages.error(request, 'Username is already taken.')
-            return render(request, 'signup.html')
+        # Check if passwords match
+        if password1 != password2:
+            messages.error(request, "Passwords do not match.")
+            return render(request, "signup.html")
 
+        # Check for existing username
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username is already taken.")
+            return render(request, "signup.html")
+
+        # Check for existing email
         if User.objects.filter(email=email).exists():
-            messages.error(request, 'Email is already in use.')
-            return render(request, 'signup.html')
+            messages.error(request, "Email is already in use.")
+            return render(request, "signup.html")
 
         try:
-            user = User.objects.create_user(username=username, email=email, password=password)
+            user = User.objects.create_user(username=username, email=email, password=password1)
             user.first_name = first_name
             user.last_name = last_name
             user.save()
-            messages.success(request, 'Account created. Please log in.')
-            return redirect('login')
+            messages.success(request, "Account created. Please log in.")
+            return redirect("login")
         except IntegrityError:
-            messages.error(request, 'An error occurred. Try again.')
-            return render(request, 'signup.html')
+            messages.error(request, "An error occurred. Try again.")
+            return render(request, "signup.html")
 
-    return render(request, 'signup.html')
+    return render(request, "signup.html")
 
 def login_view(request):
     if request.method == "POST":
