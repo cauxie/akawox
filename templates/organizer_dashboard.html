@@ -7,6 +7,24 @@
   <title>Akawo Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+
+
+<script>
+function showNotAvailable(e) {
+    e.preventDefault(); // Prevent default link or button behavior
+    const modal = document.getElementById('giftModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+function closeModal() {
+    const modal = document.getElementById('giftModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+</script>
+
+
 </head>
 <body>
 <div class="min-h-screen bg-black text-white px-4 pt-6 pb-40 font-sans relative overflow-x-hidden">
@@ -26,7 +44,7 @@
         <h1 class="text-lg font-bold text-white">{{ user.first_name }} {{ user.last_name }}</h1>
       </div>
       <!-- Light Mode Button -->
-      <button class="absolute top-0 right-0 text-white text-xl p-2">
+      <button onclick="showLightModeModal()" class="absolute top-0 right-0 text-white text-xl p-2">
         <span class="material-symbols-outlined">light_mode</span>
       </button>
     </div>
@@ -128,7 +146,7 @@
           <p class="text-sm text-gray-300">Invite Friends and earn.</p>
         </div>
       </div>
-      <button class="bg-blue-600 text-white rounded-full px-5 py-2 text-sm font-medium hover:bg-blue-700">Go</button>
+      <button onclick="showNotAvailable(event)" class="bg-blue-600 text-white rounded-full px-5 py-2 text-sm font-medium hover:bg-blue-700">Go</button>
     </div>
   </main>
 </div>
@@ -204,6 +222,8 @@
   </div>
 </div>
 
+
+
 <!-- Scripts -->
 <script>
 function toggleModal() {
@@ -217,6 +237,29 @@ function openModal(e) {
 }
 function closeModal() {
   document.getElementById('giftModal').classList.add('hidden');
+}
+</script>
+
+<!-- Light Mode Modal -->
+<div id="lightModeModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-zinc-900 p-6 rounded-2xl shadow-lg text-center max-w-sm w-full">
+    <h2 class="text-white text-lg font-bold mb-4">Coming Soon</h2>
+    <p class="text-gray-400 mb-6">Team is working on the light mode feature.</p>
+    <button onclick="closeLightModeModal()" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg">Close</button>
+  </div>
+</div>
+
+ <script>
+function showLightModeModal() {
+    const modal = document.getElementById('lightModeModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+function closeLightModeModal() {
+    const modal = document.getElementById('lightModeModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
 }
 </script>
 </body>

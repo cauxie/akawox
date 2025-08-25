@@ -14,6 +14,22 @@
       modal.classList.toggle('flex');
     }
   </script>
+
+  <script>
+function showNotAvailable(e) {
+    e.preventDefault(); // Prevent default link or button behavior
+    const modal = document.getElementById('giftModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+function closeModal() {
+    const modal = document.getElementById('giftModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+</script>
+
 </head>
 <body>
 <div class="min-h-screen bg-black text-white px-4 pt-6 pb-40 font-sans relative overflow-x-hidden">
@@ -34,7 +50,7 @@
       </div>
 
       <!-- Light Mode Button -->
-      <button class="absolute top-0 right-0 text-white text-xl p-2">
+      <button onclick="showLightModeModal()"  class="absolute top-0 right-0 text-white text-xl p-2">
         <span class="material-symbols-outlined">light_mode</span>
       </button>
     </div>
@@ -133,7 +149,7 @@ send_money
     </a>
    
   <!-- Gift User -->
-      <a href="#" onclick="openModal(event)" class="bg-zinc-900 rounded-2xl p-4 flex flex-col items-start shadow">
+      <a href="#" onclick="showNotAvailable(event)" class="bg-zinc-900 rounded-2xl p-4 flex flex-col items-start shadow">
         <div class="w-10 h-10 bg-zinc-800 rounded-full flex items-center justify-center mb-2">
           <span class="material-symbols-outlined text-green-900">featured_seasonal_and_gifts</span>
         </div>
@@ -177,7 +193,7 @@ more_horiz
           <p class="text-sm text-gray-300">Invite Friends and earn.</p>
         </div>
       </div>
-      <button class="bg-blue-600 text-white rounded-full px-5 py-2 text-sm font-medium hover:bg-blue-700">Go</button>
+      <button onclick="showNotAvailable(event)" class="bg-blue-600 text-white rounded-full px-5 py-2 text-sm font-medium hover:bg-blue-700">Go</button>
     </div>
   </main>
 </div>
@@ -262,7 +278,30 @@ more_horiz
 <!-- Include Material Icons -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
- 
+
+<!-- Light Mode Modal -->
+<div id="lightModeModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-zinc-900 p-6 rounded-2xl shadow-lg text-center max-w-sm w-full">
+    <h2 class="text-white text-lg font-bold mb-4">Coming Soon</h2>
+    <p class="text-gray-400 mb-6">Team is working on the light mode feature.</p>
+    <button onclick="closeLightModeModal()" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg">Close</button>
+  </div>
+</div>
+
+ <script>
+function showLightModeModal() {
+    const modal = document.getElementById('lightModeModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+function closeLightModeModal() {
+    const modal = document.getElementById('lightModeModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+</script>
+
 
     </main>
   </div>
