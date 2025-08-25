@@ -943,4 +943,5 @@ def contributor_withdrawals(request, group_id):
         'withdrawals': withdrawals
     })
 
-
+def more_view(request):
+    return render(request, 'more.html')

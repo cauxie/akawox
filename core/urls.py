@@ -14,7 +14,7 @@ urlpatterns = [
     path('role/', views.select_role_view, name='select_role'),
     path('login/', views.login_view, name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
-    
+    path('more/', views.more_view, name='more'),
 
     # Forgot password flow
     path("forgot-password/", auth_views.PasswordResetView.as_view(
