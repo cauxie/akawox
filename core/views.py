@@ -1,5 +1,3 @@
-# core/views.py
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout
@@ -8,26 +6,27 @@ from django.contrib import messages
 from django.conf import settings
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.db.models import Sum
-
-import requests
-import uuid
-import json
-import hmac
-import hashlib
-from datetime import date
 
 from .models import (
     UserProfile, AkawoGroup, GroupMember,
     Contribution, Payment, Withdrawal,
-    Transaction
+    Report, Transaction, Notification
 )
-from .utils import generate_referral_code
+
+import requests
+import uuid
+import json
+import hashlib
+import hmac
 
 
-# =========================
+# ======================
 # AUTH
-# =========================
+# ======================
+
+def index(request):
+    return render(request, "index.html")
+
 
 def signup_view(request):
     if request.method == "POST":
@@ -55,52 +54,27 @@ def login_view(request):
         )
         if user:
             auth_login(request, user)
-            return redirect("dashboard_redirect")
+            return redirect("dashboard")
 
-        messages.error(request, "Invalid login")
+        messages.error(request, "Invalid credentials")
 
     return render(request, "login.html")
 
 
 @login_required
-def logout_view(request):
-    logout(request)
-    return redirect("login")
-
-
-# =========================
-# ROLE
-# =========================
-
-@login_required
-def select_role_view(request):
-    if request.method == "POST":
-        role = request.POST.get("selected_role")
-        profile, _ = UserProfile.objects.get_or_create(user=request.user)
-        profile.role = role
-        profile.save()
-
-        return redirect("dashboard_redirect")
-
-    return render(request, "role.html")
-
-
-@login_required
 def dashboard_redirect(request):
-    profile = request.user.profile
-
-    if profile.role == "organizer":
+    if AkawoGroup.objects.filter(organizer=request.user).exists():
         return redirect("organizer_dashboard")
 
     if GroupMember.objects.filter(user=request.user).exists():
         return redirect("contributor_dashboard")
 
-    return redirect("join_group")
+    return redirect("select_role")
 
 
-# =========================
+# ======================
 # GROUPS
-# =========================
+# ======================
 
 @login_required
 def create_group(request):
@@ -109,14 +83,11 @@ def create_group(request):
             group_name=request.POST.get("name"),
             organizer=request.user,
             contribution_cycle=request.POST.get("contribution_type"),
-            contribution_amount=request.POST.get("amount"),
-            referral_code=generate_referral_code(),
+            contribution_amount=request.POST.get("contribution_amount"),
         )
-
         GroupMember.objects.create(user=request.user, group=group)
-
         messages.success(request, "Group created")
-        return redirect("organizer_dashboard")
+    return redirect("organizer_dashboard")
 
 
 @login_required
@@ -131,18 +102,17 @@ def join_group(request):
                 messages.info(request, "Already joined")
             else:
                 GroupMember.objects.create(user=request.user, group=group)
-
-            return redirect("contributor_dashboard")
+                messages.success(request, "Joined successfully")
 
         except AkawoGroup.DoesNotExist:
             messages.error(request, "Invalid code")
 
-    return render(request, "join_group.html")
+    return redirect("contributor_dashboard")
 
 
-# =========================
+# ======================
 # DASHBOARDS
-# =========================
+# ======================
 
 @login_required
 def organizer_dashboard(request):
@@ -152,117 +122,162 @@ def organizer_dashboard(request):
 
 @login_required
 def contributor_dashboard(request):
-    memberships = GroupMember.objects.filter(user=request.user).select_related("group")
-    groups = [m.group for m in memberships]
-
+    groups = GroupMember.objects.filter(user=request.user)
     return render(request, "contributor_dashboard.html", {"groups": groups})
 
 
-# =========================
-# PAYMENTS (CORE LOGIC)
-# =========================
+# ======================
+# PAYSTACK HELPERS
+# ======================
 
-@login_required
-def start_contribution_payment(request, member_id):
-    member = get_object_or_404(GroupMember, id=member_id)
-
-    amount = int(member.group.contribution_amount) * 100
-    reference = str(uuid.uuid4())
-
-    Payment.objects.create(
-        member=member,
-        amount=amount / 100,
-        reference=reference,
-        payment_method="paystack"
-    )
-
+def initialize_payment(email, amount, reference, callback_url):
     headers = {
         "Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}",
         "Content-Type": "application/json",
     }
 
     data = {
-        "email": member.user.email,
-        "amount": amount,
+        "email": email,
+        "amount": int(amount * 100),  # convert to kobo
         "reference": reference,
-        "callback_url": request.build_absolute_uri("/payment/callback/"),
+        "callback_url": callback_url,
     }
 
-    res = requests.post("https://api.paystack.co/transaction/initialize", json=data, headers=headers)
-    response = res.json()
+    res = requests.post(
+        "https://api.paystack.co/transaction/initialize",
+        headers=headers,
+        json=data
+    )
+
+    return res.json()
+
+
+# ======================
+# CONTRIBUTOR PAYMENT
+# ======================
+
+@login_required
+def start_contribution_payment(request, member_id):
+    member = get_object_or_404(GroupMember, id=member_id)
+
+    reference = str(uuid.uuid4())
+
+    Payment.objects.create(
+        contributor=member,
+        amount=member.group.contribution_amount,
+        reference=reference,
+        status="initiated"
+    )
+
+    response = initialize_payment(
+        email=member.user.email,
+        amount=member.group.contribution_amount,
+        reference=reference,
+        callback_url=request.build_absolute_uri("/payment/callback/")
+    )
 
     if response.get("status"):
         return redirect(response["data"]["authorization_url"])
 
-    return HttpResponse("Payment error")
+    return HttpResponse("Payment init failed")
 
 
-# =========================
-# ORGANIZER CASH PAYMENT
-# =========================
+# ======================
+# ORGANIZER PAYS FOR CONTRIBUTOR
+# ======================
 
 @login_required
 def pay_for_contributor(request, group_id):
     if request.method == "POST":
-        member = get_object_or_404(GroupMember, id=request.POST.get("member_id"))
+        contributor_id = request.POST.get("contributor_id")
 
-        amount = float(request.POST.get("amount"))
+        member = get_object_or_404(GroupMember, id=contributor_id, group_id=group_id)
 
-        Contribution.objects.create(
-            member=member,
-            amount=amount,
-            paid_by="organizer",
-            status="completed"
+        reference = f"org_{uuid.uuid4().hex[:10]}"
+
+        Payment.objects.create(
+            contributor=member,
+            amount=member.group.contribution_amount,
+            reference=reference,
+            status="initiated"
         )
 
-        Transaction.objects.create(
-            user=member.user,
-            amount=amount,
-            transaction_type="contribution",
-            status="success"
+        response = initialize_payment(
+            email=request.user.email,  # organizer pays
+            amount=member.group.contribution_amount,
+            reference=reference,
+            callback_url=request.build_absolute_uri("/payment/callback/")
         )
 
-        messages.success(request, "Payment recorded")
+        if response.get("status"):
+            return redirect(response["data"]["authorization_url"])
 
     return redirect("organizer_dashboard")
 
 
-# =========================
-# WEBHOOK (ONLY ONE)
-# =========================
+# ======================
+# PAYMENT CALLBACK
+# ======================
+
+def payment_callback(request):
+    reference = request.GET.get("reference")
+
+    headers = {
+        "Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}"
+    }
+
+    res = requests.get(
+        f"https://api.paystack.co/transaction/verify/{reference}",
+        headers=headers
+    )
+
+    data = res.json()
+
+    if data.get("status") and data["data"]["status"] == "success":
+        payment = get_object_or_404(Payment, reference=reference)
+
+        if payment.status != "success":
+            payment.status = "success"
+            payment.save()
+
+            Contribution.objects.create(
+                member=payment.contributor,
+                amount=payment.amount,
+                paid_by="organizer" if reference.startswith("org_") else "self",
+                payment_reference=reference,
+                status="completed"
+            )
+
+    return render(request, "success.html")
+
+
+# ======================
+# WEBHOOK (backup)
+# ======================
 
 @csrf_exempt
 def paystack_webhook(request):
     payload = request.body
+
     signature = request.META.get("HTTP_X_PAYSTACK_SIGNATURE")
+    secret = settings.PAYSTACK_SECRET_KEY.encode()
 
-    computed = hmac.new(
-        settings.PAYSTACK_SECRET_KEY.encode(),
-        payload,
-        hashlib.sha512
-    ).hexdigest()
+    expected = hmac.new(secret, payload, hashlib.sha512).hexdigest()
 
-    if signature != computed:
+    if signature != expected:
         return HttpResponse(status=400)
 
     data = json.loads(payload)
 
-    if data["event"] == "charge.success":
-        ref = data["data"]["reference"]
+    if data.get("event") == "charge.success":
+        reference = data["data"]["reference"]
 
         try:
-            payment = Payment.objects.get(reference=ref)
+            payment = Payment.objects.get(reference=reference)
 
             if payment.status != "success":
                 payment.status = "success"
                 payment.save()
-
-                Contribution.objects.create(
-                    member=payment.member,
-                    amount=payment.amount,
-                    paid_by="self",
-                    status="completed"
-                )
 
         except Payment.DoesNotExist:
             pass
@@ -270,45 +285,20 @@ def paystack_webhook(request):
     return HttpResponse(status=200)
 
 
-# =========================
-# CONTRIBUTIONS VIEW
-# =========================
-
-@login_required
-def group_contributions(request, group_id):
-    group = get_object_or_404(AkawoGroup, id=group_id)
-    member = get_object_or_404(GroupMember, user=request.user, group=group)
-
-    contributions = Contribution.objects.filter(member=member).order_by("-created_at")
-
-    return render(request, "contributions.html", {
-        "group": group,
-        "contributions": contributions
-    })
-
-
-# =========================
-# WITHDRAWALS
-# =========================
+# ======================
+# SIMPLE VIEWS
+# ======================
 
 @login_required
 def contributor_withdrawals(request, group_id):
-    group = get_object_or_404(AkawoGroup, id=group_id)
-    member = get_object_or_404(GroupMember, user=request.user, group=group)
-
+    member = get_object_or_404(GroupMember, user=request.user, group_id=group_id)
     withdrawals = Withdrawal.objects.filter(member=member)
-
-    return render(request, "withdrawals.html", {
-        "withdrawals": withdrawals
-    })
+    return render(request, "contributor_withdrawals.html", {"withdrawals": withdrawals})
 
 
-# =========================
-# TRANSACTIONS
-# =========================
+def terms_and_conditions(request):
+    return render(request, "terms.html")
 
-@login_required
-def transaction_history(request):
-    txs = Transaction.objects.filter(user=request.user).order_by("-created_at")
 
-    return render(request, "transactions.html", {"transactions": txs})
+def privacy_policy(request):
+    return render(request, "policy.html")
